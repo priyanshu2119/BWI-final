@@ -122,24 +122,7 @@ const Home = () => {
       {/* Main content with scroll animations */}
       <motion.div style={{ y: translateY, opacity }} className="relative z-10">
         <HeroSection />
-        {/* Add a search component to the hero section */}
-        <div className="relative w-full max-w-lg mx-auto mt-8">
-          <input
-            type="text"
-            placeholder="Search hackathons by technology, date, or theme..."
-            className="w-full px-5 py-3 pr-12 rounded-full border-2 border-indigo-100 focus:border-indigo-500 focus:outline-none shadow-md"
-          />
-          <motion.div 
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-indigo-600 text-white cursor-pointer"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </motion.div>
-        </div>
+       
       </motion.div>
       
       {/* TypeAnimation Section - Integrated with white background */}
