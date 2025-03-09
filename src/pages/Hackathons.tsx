@@ -252,6 +252,120 @@ const hackathons = [
     rating: 4.5,
     sponsors: ['SecureTech', 'CyberDefense', 'SafeNet'],
     teamSize: '1-4'
+  },
+  {
+    id: 13,
+    title: 'Quantum Computing Challenge',
+    date: 'November 8-10, 2024',
+    registrationDeadline: 'October 25, 2024',
+    participants: '150+',
+    location: 'Virtual',
+    image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=800',
+    gradient: 'bg-gradient-to-br from-indigo-800 to-violet-900',
+    category: 'Quantum',
+    prizePool: '$30,000',
+    skillLevel: 'Advanced',
+    description: 'Explore the frontiers of quantum computing and develop innovative algorithms that leverage quantum principles.',
+    featured: false,
+    status: 'upcoming',
+    rating: 4.9,
+    sponsors: ['QuantumTech', 'QBits', 'Entangle Systems'],
+    teamSize: '2-4'
+  },
+  {
+    id: 14,
+    title: 'Social Impact Hackathon',
+    date: 'December 1-3, 2024',
+    registrationDeadline: 'November 20, 2024',
+    participants: '400+',
+    location: 'Hybrid - London & Virtual',
+    image: 'https://images.unsplash.com/photo-1559024094-4a1e4495c3c1?auto=format&fit=crop&q=80&w=800',
+    gradient: 'bg-gradient-to-br from-sky-600 to-cyan-700',
+    category: 'Social',
+    prizePool: '$15,000',
+    skillLevel: 'All Levels',
+    description: 'Build solutions that address pressing social issues and contribute to creating a more equitable and sustainable world.',
+    featured: false,
+    status: 'upcoming',
+    rating: 4.6,
+    sponsors: ['GlobalGood', 'SocialVentures', 'ImpactNow'],
+    teamSize: '2-5'
+  },
+  {
+    id: 15,
+    title: 'Space Tech Innovation',
+    date: 'January 20-22, 2025',
+    registrationDeadline: 'January 10, 2025',
+    participants: '250+',
+    location: 'Virtual',
+    image: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=800',
+    gradient: 'bg-gradient-to-br from-gray-800 to-blue-900',
+    category: 'Space',
+    prizePool: '$40,000',
+    skillLevel: 'Intermediate',
+    description: 'Develop cutting-edge solutions for space exploration, satellite technology, and interplanetary travel.',
+    featured: false,
+    status: 'upcoming',
+    rating: 4.9,
+    sponsors: ['SpaceX', 'OrbitTech', 'StarNav'],
+    teamSize: '2-4'
+  },
+  {
+    id: 16,
+    title: 'Robotics Challenge',
+    date: 'February 15-17, 2025',
+    registrationDeadline: 'February 1, 2025',
+    participants: '200+',
+    location: 'Hybrid - Tokyo & Virtual',
+    image: 'https://images.unsplash.com/photo-1561152820-340780bc049e?auto=format&fit=crop&q=80&w=800',
+    gradient: 'bg-gradient-to-br from-gray-700 to-stone-900',
+    category: 'Robotics',
+    prizePool: '$25,000',
+    skillLevel: 'Advanced',
+    description: 'Build and program robots to solve complex challenges in logistics, manufacturing, and everyday life.',
+    featured: false,
+    status: 'upcoming',
+    rating: 4.7,
+    sponsors: ['RoboInc', 'MechMinds', 'AutomateNow'],
+    teamSize: '2-5'
+  },
+  {
+    id: 17,
+    title: 'Metaverse Design Sprint',
+    date: 'March 5-7, 2025',
+    registrationDeadline: 'February 20, 2025',
+    participants: '300+',
+    location: 'Virtual',
+    image: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&q=80&w=800',
+    gradient: 'bg-gradient-to-br from-pink-700 to-purple-900',
+    category: 'Metaverse',
+    prizePool: '$20,000',
+    skillLevel: 'Intermediate',
+    description: 'Create immersive metaverse experiences that redefine how we interact, work, and play in virtual environments.',
+    featured: false,
+    status: 'upcoming',
+    rating: 4.5,
+    sponsors: ['MetaCorp', 'VirtualWorlds', 'ImmersiveX'],
+    teamSize: '2-4'
+  },
+  {
+    id: 18,
+    title: 'Blockchain for Social Good',
+    date: 'January 10-12, 2025',
+    registrationDeadline: 'December 25, 2024',
+    participants: '250+',
+    location: 'Virtual',
+    image: 'https://images.unsplash.com/photo-1620321023374-d1a68fbc720d?auto=format&fit=crop&q=80&w=800',
+    gradient: 'bg-gradient-to-br from-blue-800 to-blue-950',
+    category: 'Blockchain',
+    prizePool: '$18,000',
+    skillLevel: 'All Levels',
+    description: 'Leverage blockchain technology to create solutions for social challenges like transparency, identity, and financial inclusion.',
+    featured: true,
+    status: 'upcoming',
+    rating: 4.8,
+    sponsors: ['ChainImpact', 'BlockGood', 'CryptoForAll'],
+    teamSize: '1-4'
   }
 ];
 
@@ -627,6 +741,304 @@ const Hackathons = () => {
                 </motion.div>
               ))}
             </div>
+          </motion.div>
+        )}
+
+        {/* Active Hackathons with Countdown */}
+        {activeHackathons.length > 0 && !showFavoritesOnly && selectedStatus !== 'Past' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-12"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                Happening Now
+              </h2>
+              <Link to="/hackathons/active" className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                View all active
+              </Link>
+            </div>
+            
+            {/* Live hackathon cards with activity indicators */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {activeHackathons.slice(0, 2).map(hackathon => (
+                <motion.div
+                  key={`active-${hackathon.id}`}
+                  className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-all"
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="flex h-full">
+                    <div className="w-1/3 relative">
+                      <img 
+                        src={hackathon.image} 
+                        alt={hackathon.title} 
+                        className="w-full h-full object-cover"
+                      />
+                      <div className={`absolute inset-0 opacity-60 ${hackathon.gradient}`}></div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="bg-white/20 backdrop-blur-md rounded-full p-3">
+                          <div className="w-16 h-16 rounded-full border-4 border-white flex items-center justify-center text-white font-bold">
+                            LIVE
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="w-2/3 p-6">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="flex items-center mb-2">
+                            <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Active</span>
+                            <span className="text-xs text-gray-500 ml-2">Ends in {Math.floor(Math.random() * 10) + 1} days</span>
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-900 mb-1">{hackathon.title}</h3>
+                          <p className="text-gray-600 text-sm line-clamp-2 mb-3">{hackathon.description}</p>
+                        </div>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="bg-gray-100 p-2 rounded-full"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            toggleFavorite(hackathon.id);
+                          }}
+                        >
+                          <Heart 
+                            className={`w-5 h-5 ${favoriteHackathons.includes(hackathon.id) ? 'fill-amber-500 text-amber-500' : 'text-gray-400'}`} 
+                          />
+                        </motion.button>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                          <Award className="w-4 h-4" />
+                          <span>{hackathon.prizePool}</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                          <Users className="w-4 h-4" />
+                          <span>{hackathon.participants}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4 flex justify-between items-center">
+                        <div className="inline-flex gap-1">
+                          <span className="animate-ping absolute h-2 w-2 rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative rounded-full h-2 w-2 bg-red-500"></span>
+                          <span className="text-xs text-gray-500">{120 + Math.floor(Math.random() * 50)} people active</span>
+                        </div>
+                        <Link to={`/hackathon/${hackathon.id}`} className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                          Join Now
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Main Hackathon Listing with Enhanced Cards */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              {selectedCategory !== 'All' ? selectedCategory : showFavoritesOnly ? 'Your Favorites' : 'All Hackathons'}
+            </h2>
+            <div className="flex items-center text-sm text-gray-600">
+              <span className="mr-2">Sort by:</span>
+              <select className="border-none bg-transparent focus:ring-0 cursor-pointer">
+                <option>Date (Newest)</option>
+                <option>Prize Pool</option>
+                <option>Popularity</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {view === 'grid' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredHackathons.map(hackathon => (
+              <motion.div
+                key={`grid-${hackathon.id}`}
+                whileHover={{ y: -5 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 group"
+              >
+                <div className="relative">
+                  <div className="absolute top-4 right-4 z-10">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleFavorite(hackathon.id);
+                      }}
+                    >
+                      <Heart 
+                        className={`w-4 h-4 ${favoriteHackathons.includes(hackathon.id) ? 'fill-amber-500 text-amber-500' : 'text-gray-600'}`} 
+                      />
+                    </motion.button>
+                  </div>
+                  
+                  {/* Status badge */}
+                  <div className="absolute top-4 left-4">
+                    {hackathon.status === 'active' ? (
+                      <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-md font-medium inline-flex items-center">
+                        <span className="w-1.5 h-1.5 bg-white rounded-full mr-1 animate-pulse"></span>
+                        Live Now
+                      </span>
+                    ) : hackathon.status === 'upcoming' ? (
+                      <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-md font-medium inline-flex items-center">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        Upcoming
+                      </span>
+                    ) : (
+                      <span className="bg-gray-600 text-white text-xs px-2 py-1 rounded-md font-medium inline-flex items-center">
+                        <Clock className="w-3 h-3 mr-1" />
+                        Past
+                      </span>
+                    )}
+                  </div>
+                  
+                  <img 
+                    src={hackathon.image} 
+                    alt={hackathon.title}
+                    className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-black to-transparent opacity-80"></div>
+                  
+                  {/* Countdown for upcoming hackathons */}
+                  {hackathon.status === 'upcoming' && getDaysUntil(hackathon.registrationDeadline) !== null && (
+                    <div className="absolute bottom-4 left-4">
+                      <div className="bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full">
+                        <span className="text-white text-xs font-medium">
+                          Registration closes in {getDaysUntil(hackathon.registrationDeadline)} days
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                      hackathon.category === 'AI/ML' ? 'bg-blue-100 text-blue-700' :
+                      hackathon.category === 'Blockchain' ? 'bg-purple-100 text-purple-700' :
+                      hackathon.category === 'Sustainability' ? 'bg-green-100 text-green-700' :
+                      hackathon.category === 'Mobile' ? 'bg-orange-100 text-orange-700' :
+                      hackathon.category === 'Health' ? 'bg-emerald-100 text-emerald-700' :
+                      hackathon.category === 'Gaming' ? 'bg-violet-100 text-violet-700' :
+                      'bg-gray-100 text-gray-700'
+                    }`}>
+                      {hackathon.category}
+                    </span>
+                    <div className="flex items-center">
+                      <Star className="w-3.5 h-3.5 text-amber-400" />
+                      <span className="text-sm font-medium text-gray-700 ml-1">{hackathon.rating}</span>
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1">{hackathon.title}</h3>
+                  <p className="text-gray-600 text-sm line-clamp-2 mb-4">{hackathon.description}</p>
+                  
+                  <div className="border-t border-gray-100 pt-4">
+                    <div className="grid grid-cols-3 gap-2 mb-5">
+                      <div className="text-center">
+                        <span className="text-xs text-gray-500 block mb-1">Prize</span>
+                        <span className="text-sm font-bold text-gray-900">{hackathon.prizePool}</span>
+                      </div>
+                      <div className="text-center">
+                        <span className="text-xs text-gray-500 block mb-1">Team Size</span>
+                        <span className="text-sm font-bold text-gray-900">{hackathon.teamSize}</span>
+                      </div>
+                      <div className="text-center">
+                        <span className="text-xs text-gray-500 block mb-1">Participants</span>
+                        <span className="text-sm font-bold text-gray-900">{hackathon.participants}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500 flex items-center">
+                        <MapPin className="w-3.5 h-3.5 mr-1" />
+                        {hackathon.location}
+                      </span>
+                      <Link 
+                        to={`/hackathon/${hackathon.id}`} 
+                        className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
+                      >
+                        View Details
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          /* Add map view - a placeholder for now */
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden h-[500px] relative">
+            <div className="absolute inset-0 bg-gray-100 flex items-center justify-center text-gray-400">
+              <div className="text-center">
+                <Map className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                <p>Map view coming soon!</p>
+                <p className="text-sm mt-2">Browse hackathons by location</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Add Quick Apply floating button */}
+        <motion.div 
+          className="fixed bottom-8 right-8 z-10"
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1 }}
+        >
+          <motion.button
+            whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.5)" }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-4 rounded-full shadow-lg font-bold flex items-center"
+          >
+            <span className="mr-2">Quick Apply</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </motion.button>
+        </motion.div>
+
+        {/* Empty state for no results */}
+        {filteredHackathons.length === 0 && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-white rounded-xl shadow-md p-12 text-center"
+          >
+            <div className="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Search className="w-12 h-12 text-indigo-500 opacity-70" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">No hackathons found</h3>
+            <p className="text-gray-600 max-w-md mx-auto mb-6">
+              We couldn't find any hackathons matching your current filters. Try adjusting your search or filters.
+            </p>
+            <button 
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('All');
+                setSelectedSkillLevel('All Levels');
+                setSelectedStatus('All');
+                setShowFavoritesOnly(false);
+              }}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium"
+            >
+              Reset Filters
+            </button>
           </motion.div>
         )}
       </div>
