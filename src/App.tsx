@@ -9,6 +9,7 @@ import UserDashboard from './pages/dashboard/UserDashboard';
 import OrganizerDashboard from './pages/dashboard/OrganizerDashboard';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import HackathonDetails from './pages/HackathonDetails';
+import Hackathons from './pages/Hackathons';
 import Teams from './pages/Teams';
 import Mentors from './pages/Mentors';
 import Projects from './pages/Projects';
@@ -27,6 +28,7 @@ function App() {
           <Route path="/user/login" element={<UserLogin />} />
           <Route path="/organizer/login" element={<OrganizerLogin />} />
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/hackathons" element={<Hackathons />} />
           <Route path="/hackathon/:id" element={<HackathonDetails />} />
           <Route path="/teams" element={<Teams />} />
           <Route path="/mentors" element={<Mentors />} />

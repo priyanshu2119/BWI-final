@@ -18,6 +18,27 @@ const AdminDashboard = () => {
             Admin Dashboard - {user?.name}
           </h1>
 
-          <div className="grid grid-cols-1
-  )
-}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Admin dashboard cards can go here */}
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 flex items-center gap-4">
+              <Users className="text-blue-500" />
+              <div>
+                <h3 className="font-medium">User Management</h3>
+                <p className="text-sm text-gray-600">Manage system users</p>
+              </div>
+            </div>
+            <div className="bg-green-50 p-4 rounded-lg border border-green-100 flex items-center gap-4">
+              <Database className="text-green-500" />
+              <div>
+                <h3 className="font-medium">Content Management</h3>
+                <p className="text-sm text-gray-600">Manage website content</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;
