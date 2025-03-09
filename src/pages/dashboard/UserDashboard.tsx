@@ -12,6 +12,51 @@ const UserDashboard = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl shadow-lg p-6 mb-8 text-white"
+        >
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold mb-2">
+                Hey {user?.name}! 👋
+              </h1>
+              <p className="text-indigo-100 max-w-lg">
+                {new Date().getHours() < 12 ? "Good morning" : 
+                 new Date().getHours() < 18 ? "Good afternoon" : "Good evening"}.
+                Ready to continue your hackathon journey today?
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="mt-4 bg-white text-indigo-700 px-5 py-2 rounded-full font-medium inline-flex items-center"
+              >
+                View Your Roadmap
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </motion.button>
+            </div>
+            <div className="hidden md:block">
+              <motion.div
+                animate={{ 
+                  rotate: [0, -5, 5, -5, 0],
+                  y: [0, -5, 5, -5, 0]
+                }}
+                transition={{ 
+                  duration: 3,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+                className="p-4 bg-white/10 backdrop-blur-sm rounded-2xl"
+              >
+                <span className="text-5xl">💻</span>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-lg shadow-lg p-6"
         >
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
