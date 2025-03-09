@@ -148,25 +148,7 @@ const Home = () => {
         </div>
       </div>
       
-      {/* Section divider with animation */}
-      <div className="relative">
-        <div className="absolute inset-x-0 -top-10 h-20 bg-gradient-to-b from-purple-900/90 to-indigo-50/60 z-10"></div>
-        <div className="absolute inset-x-0 top-0 flex justify-center">
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="w-20 h-20 rounded-full bg-white shadow-lg flex items-center justify-center"
-          >
-            <motion.div 
-              className="w-10 h-10 border-t-4 border-indigo-600 rounded-full"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-            />
-          </motion.div>
-        </div>
-      </div>
+      {/* Spinner section removed completely */}
 
       <motion.div
         initial={{ opacity: 0 }}
