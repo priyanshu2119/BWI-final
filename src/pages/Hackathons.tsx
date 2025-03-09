@@ -383,6 +383,10 @@ const Hackathons = () => {
   const [favoriteHackathons, setFavoriteHackathons] = useState<number[]>([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const [isQuickApplyOpen, setIsQuickApplyOpen] = useState(false);
+  const [selectedQuickApplyHackathon, setSelectedQuickApplyHackathon] = useState<number | null>(null);
+  const [hackathonsToCompare, setHackathonsToCompare] = useState<number[]>([]);
+  const [showComparison, setShowComparison] = useState(false);
   
   // Simulated loading effect
   useEffect(() => {
@@ -407,6 +411,16 @@ const Hackathons = () => {
       setFavoriteHackathons(favoriteHackathons.filter(hackId => hackId !== id));
     } else {
       setFavoriteHackathons([...favoriteHackathons, id]);
+    }
+  };
+
+  const toggleCompare = (id: number): void => {
+    if (hackathonsToCompare.includes(id)) {
+      setHackathonsToCompare(hackathonsToCompare.filter(hackId => hackId !== id));
+    } else {
+      if (hackathonsToCompare.length < 3) {
+        setHackathonsToCompare([...hackathonsToCompare, id]);
+      }
     }
   };
 
@@ -551,6 +565,14 @@ const Hackathons = () => {
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                   </svg>
+                </motion.button>
+                <motion.button
+                  onClick={() => setView('timeline')}
+                  className={`px-3 py-2 rounded-lg ${view === 'timeline' ? 'bg-indigo-600 text-white' : 'text-gray-600'}`}
+                  whileHover={view !== 'timeline' ? { backgroundColor: '#f3f4f6' } : {}}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Clock className="w-5 h-5" />
                 </motion.button>
                 <motion.button
                   onClick={() => setView('map')}
@@ -841,6 +863,121 @@ const Hackathons = () => {
           </motion.div>
         )}
 
+        {/* Recommended Hackathons */}
+        {!showFavoritesOnly && searchQuery === '' && selectedCategory === 'All' && selectedStatus === 'All' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mb-12"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+                <TrendingUp className="w-5 h-5 mr-2 text-indigo-500" />
+                Recommended for You
+              </h2>
+              <Link to="/hackathons/recommended" className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                See all recommendations
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {hackathons
+                .filter(h => !h.featured) // Don't show hackathons already in featured
+                .sort(() => 0.5 - Math.random()) // Simple random selection
+                .slice(0, 3)
+                .map((hackathon) => (
+                  <motion.div
+                    key={`recommended-${hackathon.id}`}
+                    className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-all"
+                    whileHover={{ y: -5 }}
+                  >
+                    <div className="relative">
+                      <img 
+                        src={hackathon.image} 
+                        alt={hackathon.title}
+                        className="w-full h-40 object-cover"
+                      />
+                      <div className={`absolute inset-0 opacity-80 ${hackathon.gradient}`}></div>
+                      
+                      <div className="absolute top-0 left-0 w-full p-4">
+                        <div className="flex justify-between">
+                          <div className="bg-white/30 backdrop-blur-sm px-3 py-1 rounded-full">
+                            <span className="text-white text-xs font-medium">{hackathon.category}</span>
+                          </div>
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="bg-white/30 backdrop-blur-sm p-1.5 rounded-full"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              toggleFavorite(hackathon.id);
+                            }}
+                          >
+                            <Heart 
+                              className={`w-4 h-4 ${favoriteHackathons.includes(hackathon.id) ? 'fill-white text-white' : 'text-white'}`} 
+                            />
+                          </motion.button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-5">
+                      <div className="mb-3">
+                        <div className="flex mb-1">
+                          <div className="flex-1">
+                            <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                              hackathon.status === 'active' ? 'bg-green-100 text-green-800' : 
+                              'bg-blue-100 text-blue-800'
+                            }`}>
+                              {hackathon.status === 'active' ? 'Live Now' : 'Upcoming'}
+                            </span>
+                          </div>
+                          <div className="flex items-center">
+                            <Star className="w-3.5 h-3.5 text-amber-400" />
+                            <span className="text-xs font-medium text-gray-700 ml-1">{hackathon.rating}</span>
+                          </div>
+                        </div>
+                        <h3 className="font-bold text-gray-900 mb-1">{hackathon.title}</h3>
+                        <p className="text-gray-600 text-xs line-clamp-2">{hackathon.description}</p>
+                      </div>
+                      
+                      <div className="flex justify-between items-center mt-4 pt-3 border-t border-gray-100">
+                        <div className="flex items-center text-xs text-gray-500">
+                          <Users className="w-3.5 h-3.5 mr-1" />
+                          <span>{hackathon.participants}</span>
+                        </div>
+                        <Link 
+                          to={`/hackathon/${hackathon.id}`} 
+                          className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 text-xs font-medium rounded-lg transition-colors"
+                        >
+                          Learn More
+                        </Link>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+            </div>
+            
+            <div className="bg-indigo-50 rounded-xl mt-6 p-4 border border-indigo-100">
+              <div className="flex items-start">
+                <div className="bg-indigo-100 rounded-full p-2 mr-4">
+                  <Bell className="w-5 h-5 text-indigo-600" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-sm font-medium text-indigo-800 mb-1">Personalized Recommendations</h4>
+                  <p className="text-xs text-indigo-600">
+                    These hackathons are recommended based on your skills, interests, and past participation history.
+                  </p>
+                </div>
+                <button className="text-xs text-indigo-600 hover:text-indigo-800">
+                  Customize
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Main Hackathon Listing with Enhanced Cards */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
@@ -888,23 +1025,31 @@ const Hackathons = () => {
                   </div>
                   
                   {/* Status badge */}
-                  <div className="absolute top-4 left-4">
-                    {hackathon.status === 'active' ? (
-                      <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-md font-medium inline-flex items-center">
-                        <span className="w-1.5 h-1.5 bg-white rounded-full mr-1 animate-pulse"></span>
-                        Live Now
-                      </span>
-                    ) : hackathon.status === 'upcoming' ? (
-                      <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-md font-medium inline-flex items-center">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        Upcoming
-                      </span>
-                    ) : (
-                      <span className="bg-gray-600 text-white text-xs px-2 py-1 rounded-md font-medium inline-flex items-center">
-                        <Clock className="w-3 h-3 mr-1" />
-                        Past
-                      </span>
-                    )}
+                  <div className="absolute top-4 left-4 z-10">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleCompare(hackathon.id);
+                      }}
+                    >
+                      <svg
+                        className={`w-4 h-4 ${hackathonsToCompare.includes(hackathon.id) ? 'text-indigo-600' : 'text-gray-600'}`} 
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
+                      </svg>
+                    </motion.button>
                   </div>
                   
                   <img 
@@ -981,6 +1126,67 @@ const Hackathons = () => {
               </motion.div>
             ))}
           </div>
+        ) : view === 'timeline' ? (
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 overflow-hidden">
+            <div className="relative">
+              {/* Timeline header with months */}
+              <div className="flex border-b mb-8 pb-2">
+                {['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, i) => (
+                  <div key={month} className="flex-1 text-center">
+                    <span className={`text-sm font-medium ${i === 0 ? 'text-indigo-600' : 'text-gray-500'}`}>{month}</span>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Timeline with hackathons */}
+              <div className="relative">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gray-100"></div>
+                
+                {filteredHackathons.map((hackathon, index) => {
+                  // Calculate position based on date (simplified)
+                  const position = index * 8 + 5; // This would be calculated from actual date
+                  return (
+                    <motion.div
+                      key={`timeline-${hackathon.id}`}
+                      className="absolute transform -translate-x-1/2"
+                      style={{ left: `${position}%`, top: '0' }}
+                      whileHover={{ y: -5 }}
+                    >
+                      <div className="flex flex-col items-center">
+                        <div className={`w-3 h-3 rounded-full ${
+                          hackathon.status === 'active' ? 'bg-green-500' : 
+                          hackathon.status === 'upcoming' ? 'bg-blue-500' : 'bg-gray-400'
+                        }`}></div>
+                        <div className="mt-2 w-48">
+                          <div className={`${hackathon.status === 'active' ? 'border-green-200' : 'border-gray-200'} border bg-white rounded-lg shadow-sm p-3 hover:shadow-md transition-shadow`}>
+                            <div className="flex justify-between items-start mb-1">
+                              <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                                hackathon.category === 'AI/ML' ? 'bg-blue-100 text-blue-700' :
+                                hackathon.category === 'Blockchain' ? 'bg-purple-100 text-purple-700' :
+                                'bg-gray-100 text-gray-700'
+                              }`}>
+                                {hackathon.category}
+                              </span>
+                              <Heart 
+                                className={`w-3 h-3 ${favoriteHackathons.includes(hackathon.id) ? 'fill-amber-500 text-amber-500' : 'text-gray-400'}`} 
+                              />
+                            </div>
+                            <h4 className="text-sm font-semibold line-clamp-1">{hackathon.title}</h4>
+                            <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
+                              <span>{hackathon.date}</span>
+                              <span>{hackathon.prizePool}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+            
+            <div className="h-64"></div> {/* Space for timeline */}
+          </div>
         ) : (
           /* Add map view - a placeholder for now */
           <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden h-[500px] relative">
@@ -1004,7 +1210,14 @@ const Hackathons = () => {
           <motion.button
             whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.5)" }}
             whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-4 rounded-full shadow-lg font-bold flex items-center"
+            className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-5 py-4 rounded-full shadow-lg font-bold flex items-center"
+            onClick={() => {
+              const upcomingHackathons = hackathons.filter(h => h.status === 'upcoming');
+              if (upcomingHackathons.length > 0) {
+                setSelectedQuickApplyHackathon(upcomingHackathons[0].id);
+                setIsQuickApplyOpen(true);
+              }
+            }}
           >
             <span className="mr-2">Quick Apply</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -1012,6 +1225,128 @@ const Hackathons = () => {
             </svg>
           </motion.button>
         </motion.div>
+
+        {/* Add Quick Apply Modal */}
+        <AnimatePresence>
+          {isQuickApplyOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                onClick={() => setIsQuickApplyOpen(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, y: 100, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 100, scale: 0.9 }}
+                className="fixed bottom-0 inset-x-0 z-50 bg-white rounded-t-xl shadow-xl p-6 sm:max-w-lg sm:mx-auto sm:rounded-xl sm:top-1/2 sm:bottom-auto sm:-translate-y-1/2"
+              >
+                <div className="absolute -top-10 left-0 right-0 flex justify-center sm:hidden">
+                  <div className="w-16 h-1 bg-white/80 rounded-full"></div>
+                </div>
+                
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-xl font-bold text-gray-900">Quick Apply</h3>
+                  <button 
+                    onClick={() => setIsQuickApplyOpen(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Select Hackathon</label>
+                  <select 
+                    className="w-full border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                    value={selectedQuickApplyHackathon || ''}
+                    onChange={(e) => setSelectedQuickApplyHackathon(parseInt(e.target.value))}
+                  >
+                    {hackathons
+                      .filter(h => h.status === 'upcoming')
+                      .map(h => (
+                        <option key={h.id} value={h.id}>{h.title}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Team Size</label>
+                  <div className="flex gap-3">
+                    {['1', '2', '3', '4', '5+'].map((size) => (
+                      <motion.button
+                        key={size}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex-1 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50"
+                      >
+                        {size}
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Looking for Team Members?</label>
+                  <div className="flex gap-3">
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      className="flex-1 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      Yes, I need teammates
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      className="flex-1 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      No, I have a team
+                    </motion.button>
+                  </div>
+                </div>
+                
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-lg font-medium"
+                >
+                  Submit Quick Application
+                </motion.button>
+                
+                <p className="text-xs text-gray-500 mt-3 text-center">
+                  You'll be prompted to complete your full profile and team details after this quick application.
+                </p>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* Add comparison floating button when hackathons are selected */}
+        {hackathonsToCompare.length > 0 && (
+          <motion.div 
+            className="fixed bottom-8 left-8 z-10"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white shadow-lg border border-indigo-100 px-4 py-2 rounded-lg text-indigo-700 font-medium flex items-center"
+              onClick={() => setShowComparison(true)}
+            >
+              <span className="mr-2">Compare {hackathonsToCompare.length} Hackathons</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />
+              </svg>
+            </motion.button>
+          </motion.div>
+        )}
 
         {/* Empty state for no results */}
         {filteredHackathons.length === 0 && (
