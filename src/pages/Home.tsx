@@ -12,6 +12,10 @@ const Home = () => {
   const { scrollY } = useScroll();
   const translateY = useTransform(scrollY, [0, 1000], [0, -150]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0.2]);
+  const scrollProgress = useTransform(scrollY, 
+    [0, document.body.scrollHeight - window.innerHeight], 
+    [0, 1]
+  );
   
   // For animated gradient background
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -61,6 +65,8 @@ const Home = () => {
       image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=120"
     }
   ];
+
+  const [showToast, setShowToast] = useState(false);
 
   return (
     <div className="relative overflow-hidden">
@@ -116,6 +122,24 @@ const Home = () => {
       {/* Main content with scroll animations */}
       <motion.div style={{ y: translateY, opacity }} className="relative z-10">
         <HeroSection />
+        {/* Add a search component to the hero section */}
+        <div className="relative w-full max-w-lg mx-auto mt-8">
+          <input
+            type="text"
+            placeholder="Search hackathons by technology, date, or theme..."
+            className="w-full px-5 py-3 pr-12 rounded-full border-2 border-indigo-100 focus:border-indigo-500 focus:outline-none shadow-md"
+          />
+          <motion.div 
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-indigo-600 text-white cursor-pointer"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </motion.div>
+        </div>
       </motion.div>
       
       {/* TypeAnimation Section - Integrated with white background */}
@@ -159,6 +183,39 @@ const Home = () => {
       >
         <UpcomingHackathons />
       </motion.div>
+
+      {/* Add before statistics section */}
+      <div className="container mx-auto px-4 py-16">
+        <div className="bg-gradient-to-r from-indigo-900 to-purple-900 rounded-2xl overflow-hidden shadow-xl">
+          <div className="grid md:grid-cols-2">
+            <div className="p-8 md:p-12 flex flex-col justify-center">
+              <div className="inline-block px-4 py-1 bg-white/20 rounded-full text-white text-sm mb-4">Featured Hackathon</div>
+              <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">AI Innovation Challenge</h3>
+              <p className="text-white/80 mb-6">Build cutting-edge AI solutions to solve real-world problems. $20,000 in prizes.</p>
+              <div className="flex flex-wrap gap-3 mb-6">
+                {["Mar 15-17", "Global", "500+ Participants"].map(tag => (
+                  <span key={tag} className="px-3 py-1 bg-white/10 rounded-full text-white text-sm">{tag}</span>
+                ))}
+              </div>
+              <motion.button 
+                className="px-6 py-3 bg-white text-indigo-900 rounded-full font-medium text-lg mt-4 self-start"
+                whileHover={{ scale: 1.03, boxShadow: "0 10px 25px -5px rgba(255, 255, 255, 0.3)" }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Apply Now
+              </motion.button>
+            </div>
+            <div className="relative h-64 md:h-auto">
+              <img 
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800" 
+                alt="Hackathon team collaborating" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/80 to-transparent md:bg-gradient-to-r"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="container mx-auto py-16 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
@@ -206,6 +263,44 @@ const Home = () => {
             Join Upcoming Hackathons
           </motion.button>
         </motion.div>
+      </div>
+
+      {/* Add before testimonials section */}
+      <div className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center mb-16">How It Works</h2>
+        <div className="relative">
+          {/* Timeline line */}
+          <div className="absolute top-0 left-1/2 w-0.5 h-full bg-indigo-200 -translate-x-1/2"></div>
+          
+          {/* Timeline steps */}
+          {[
+            { icon: "👋", title: "Register", description: "Create an account and set up your developer profile" },
+            { icon: "🔍", title: "Find Hackathons", description: "Browse upcoming events that match your skills and interests" },
+            { icon: "👥", title: "Form Teams", description: "Join existing teams or create your own with our team matching" },
+            { icon: "💻", title: "Build Projects", description: "Collaborate and code during the hackathon period" },
+            { icon: "🏆", title: "Win Prizes", description: "Submit your project and win recognition and rewards" }
+          ].map((step, i) => (
+            <motion.div 
+              key={i} 
+              className={`flex items-center mb-16 ${i % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <div className="w-1/2"></div>
+              <div className={`absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-white border-4 border-indigo-500 flex items-center justify-center z-10`}>
+                <span className="text-xl">{step.icon}</span>
+              </div>
+              <div className="w-1/2 p-4">
+                <div className="bg-white p-6 rounded-lg shadow-lg">
+                  <h3 className="text-xl font-bold mb-2 text-indigo-900">{step.title}</h3>
+                  <p className="text-gray-600">{step.description}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       <div className="bg-gradient-to-r from-indigo-50 to-purple-50 py-16 relative z-10">
@@ -266,6 +361,24 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Add after testimonials */}
+      <div className="container mx-auto px-4 py-16">
+        <h2 className="text-2xl font-semibold text-center mb-2">Trusted By</h2>
+        <p className="text-gray-500 text-center mb-12">Our platform is backed by industry leaders</p>
+        
+        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+          {["Google", "Microsoft", "Amazon", "Meta", "IBM", "Intel"].map((company) => (
+            <motion.div 
+              key={company}
+              className="flex items-center justify-center grayscale hover:grayscale-0 transition-all"
+              whileHover={{ scale: 1.05 }}
+            >
+              <div className="h-12 flex items-center justify-center font-bold text-xl text-gray-400">{company}</div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
       {/* Bottom wave effect */}
       <div className="relative -mt-20 z-0 pointer-events-none">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full">
@@ -279,6 +392,42 @@ const Home = () => {
           ></motion.path>
         </svg>
       </div>
+
+      {/* Add a newsletter signup at the bottom before the footer */}
+      <div className="bg-indigo-900 text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Stay Updated</h2>
+            <p className="text-indigo-200 mb-6">Get notified about new hackathons and opportunities</p>
+            
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input 
+                type="email" 
+                placeholder="Enter your email" 
+                className="px-4 py-3 rounded-lg flex-grow bg-indigo-800 border border-indigo-600 text-white placeholder-indigo-300 focus:outline-none"
+              />
+              <motion.button 
+                className="px-6 py-3 bg-white text-indigo-900 rounded-lg font-medium"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Subscribe
+              </motion.button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {showToast && (
+        <motion.div 
+          className="fixed bottom-24 right-8 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+        >
+          Reminder set for upcoming hackathon!
+        </motion.div>
+      )}
 
       <motion.button
         className="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-lg z-50"
@@ -294,6 +443,11 @@ const Home = () => {
       >
         <MessageSquare className="w-6 h-6" />
       </motion.button>
+
+      <motion.div 
+        className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 origin-left z-50"
+        style={{ scaleX: scrollProgress }}
+      />
     </div>
   );
 };
