@@ -433,34 +433,67 @@ const OrganizerDashboard = () => {
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-lg shadow p-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
             >
-              <h2 className="text-xl font-semibold mb-4">Hackathon Management</h2>
-              <div className="space-y-4">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">Hackathon Management</h2>
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="text-sm text-indigo-600 font-medium"
                 >
-                  Create New Hackathon
+                  View All
                 </motion.button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                  className="p-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex flex-col items-center justify-center"
                 >
-                  Manage Submissions
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  <span>Create New Hackathon</span>
                 </motion.button>
+                
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
+                  className="p-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex flex-col items-center justify-center"
                 >
-                  View Analytics
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  <span>Manage Submissions</span>
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="p-4 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors flex flex-col items-center justify-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <span>View Analytics</span>
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="p-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex flex-col items-center justify-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  <span>Edit Settings</span>
                 </motion.button>
               </div>
             </motion.div>
@@ -470,280 +503,343 @@ const OrganizerDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-8"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
           >
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-semibold text-gray-800">Active Hackathon Management</h2>
+            {/* Header with toggle button */}
+            <div 
+              className="flex justify-between items-center p-6 cursor-pointer border-b border-gray-100"
+              onClick={() => toggleSection('hackathons')}
+            >
+              <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+                Active Hackathon Management
+                {!sectionsState.hackathons && (
+                  <span className="ml-2 text-xs text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                    3 Active
+                  </span>
+                )}
+              </h2>
               <div className="flex items-center gap-3">
-                <select className="text-sm border-gray-200 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 py-1.5 px-3">
-                  <option>All Hackathons</option>
-                  <option>AI Innovation Challenge</option>
-                  <option>Web3 Builders Hackathon</option>
-                  <option>Mobile App Sprint</option>
-                </select>
+                {sectionsState.hackathons && (
+                  <select className="text-sm border-gray-200 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 py-1.5 px-3">
+                    <option>All Hackathons</option>
+                    <option>AI Innovation Challenge</option>
+                    <option>Web3 Builders Hackathon</option>
+                    <option>Mobile App Sprint</option>
+                  </select>
+                )}
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="text-sm bg-indigo-50 text-indigo-600 py-1.5 px-3 rounded-md font-medium flex items-center"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-5 w-5 text-gray-500" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d={sectionsState.hackathons ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} 
+                    />
                   </svg>
-                  New Hackathon
                 </motion.button>
               </div>
             </div>
             
-            <div className="space-y-6">
-              {[
-                {
-                  name: "AI Innovation Challenge",
-                  status: "Live",
-                  statusColor: "green",
-                  dateRange: "Mar 15 - Mar 30, 2025",
-                  participants: 328,
-                  submissions: 42,
-                  progressValue: 60,
-                  daysLeft: 8,
-                  logo: "🤖"
-                },
-                {
-                  name: "Web3 Builders Hackathon",
-                  status: "Registration",
-                  statusColor: "amber",
-                  dateRange: "Apr 5 - Apr 20, 2025",
-                  participants: 156,
-                  submissions: 0,
-                  progressValue: 20,
-                  daysLeft: 26,
-                  logo: "🔗"
-                },
-                {
-                  name: "Mobile App Sprint",
-                  status: "Planning",
-                  statusColor: "blue",
-                  dateRange: "May 10 - May 24, 2025",
-                  participants: 0,
-                  submissions: 0,
-                  progressValue: 10,
-                  daysLeft: 52,
-                  logo: "📱"
-                }
-              ].map((hackathon, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + index * 0.1 }}
-                  className="border border-gray-100 rounded-xl p-5 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-0 justify-between mb-4">
-                    <div className="flex items-center">
-                      <div className="text-3xl mr-3 bg-gray-50 w-10 h-10 rounded-lg flex items-center justify-center">
-                        {hackathon.logo}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-3">
-                          <h3 className="font-semibold text-gray-900">{hackathon.name}</h3>
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium bg-${hackathon.statusColor}-100 text-${hackathon.statusColor}-800`}>
-                            {hackathon.status}
-                          </span>
+            {/* Collapsible content */}
+            <motion.div 
+              initial={false}
+              animate={{ 
+                height: sectionsState.hackathons ? "auto" : 0,
+                opacity: sectionsState.hackathons ? 1 : 0
+              }}
+              transition={{ duration: 0.3 }}
+              style={{ overflow: "hidden" }}
+            >
+              <div className="p-6">
+                {/* Keep your existing hackathon cards */}
+                <div className="space-y-6">
+                  {[
+                    {
+                      name: "AI Innovation Challenge",
+                      status: "Live",
+                      statusColor: "green",
+                      dateRange: "Mar 15 - Mar 30, 2025",
+                      participants: 328,
+                      submissions: 42,
+                      progressValue: 60,
+                      daysLeft: 8,
+                      logo: "🤖"
+                    },
+                    {
+                      name: "Web3 Builders Hackathon",
+                      status: "Registration",
+                      statusColor: "amber",
+                      dateRange: "Apr 5 - Apr 20, 2025",
+                      participants: 156,
+                      submissions: 0,
+                      progressValue: 20,
+                      daysLeft: 26,
+                      logo: "🔗"
+                    },
+                    {
+                      name: "Mobile App Sprint",
+                      status: "Planning",
+                      statusColor: "blue",
+                      dateRange: "May 10 - May 24, 2025",
+                      participants: 0,
+                      submissions: 0,
+                      progressValue: 10,
+                      daysLeft: 52,
+                      logo: "📱"
+                    }
+                  ].map((hackathon, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
+                      className="border border-gray-100 rounded-xl p-5 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-0 justify-between mb-4">
+                        <div className="flex items-center">
+                          <div className="text-3xl mr-3 bg-gray-50 w-10 h-10 rounded-lg flex items-center justify-center">
+                            {hackathon.logo}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-3">
+                              <h3 className="font-semibold text-gray-900">{hackathon.name}</h3>
+                              <span className={`px-2 py-0.5 rounded-full text-xs font-medium bg-${hackathon.statusColor}-100 text-${hackathon.statusColor}-800`}>
+                                {hackathon.status}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-500">{hackathon.dateRange}</p>
+                          </div>
                         </div>
-                        <p className="text-sm text-gray-500">{hackathon.dateRange}</p>
+                        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                          <div className="text-center px-3 py-1">
+                            <p className="text-xs text-gray-500">Participants</p>
+                            <p className="font-semibold">{hackathon.participants}</p>
+                          </div>
+                          <div className="text-center px-3 py-1">
+                            <p className="text-xs text-gray-500">Submissions</p>
+                            <p className="font-semibold">{hackathon.submissions}</p>
+                          </div>
+                          <div className="text-center px-3 py-1">
+                            <p className="text-xs text-gray-500">Days Left</p>
+                            <p className="font-semibold">{hackathon.daysLeft}</p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                      <div className="text-center px-3 py-1">
-                        <p className="text-xs text-gray-500">Participants</p>
-                        <p className="font-semibold">{hackathon.participants}</p>
+                      
+                      <div className="mb-4">
+                        <div className="flex justify-between text-xs mb-1">
+                          <span>Progress</span>
+                          <span className="font-medium">{hackathon.progressValue}%</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-gray-100 rounded-full">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${hackathon.progressValue}%` }}
+                            transition={{ duration: 0.8, delay: 0.5 + index * 0.1 }}
+                            className={`h-1.5 rounded-full bg-${hackathon.statusColor}-500`}
+                          />
+                        </div>
                       </div>
-                      <div className="text-center px-3 py-1">
-                        <p className="text-xs text-gray-500">Submissions</p>
-                        <p className="font-semibold">{hackathon.submissions}</p>
+                      
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <motion.button
+                          whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
+                          whileTap={{ scale: 0.98 }}
+                          className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
+                          Participants
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
+                          whileTap={{ scale: 0.98 }}
+                          className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                          </svg>
+                          Submissions
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
+                          whileTap={{ scale: 0.98 }}
+                          className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                          </svg>
+                          Judges
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
+                          whileTap={{ scale: 0.98 }}
+                          className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          Settings
+                        </motion.button>
                       </div>
-                      <div className="text-center px-3 py-1">
-                        <p className="text-xs text-gray-500">Days Left</p>
-                        <p className="font-semibold">{hackathon.daysLeft}</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-4">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span>Progress</span>
-                      <span className="font-medium">{hackathon.progressValue}%</span>
-                    </div>
-                    <div className="w-full h-1.5 bg-gray-100 rounded-full">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${hackathon.progressValue}%` }}
-                        transition={{ duration: 0.8, delay: 0.5 + index * 0.1 }}
-                        className={`h-1.5 rounded-full bg-${hackathon.statusColor}-500`}
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    <motion.button
-                      whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
-                      whileTap={{ scale: 0.98 }}
-                      className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
-                      Participants
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
-                      whileTap={{ scale: 0.98 }}
-                      className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
-                      Submissions
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
-                      whileTap={{ scale: 0.98 }}
-                      className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                      </svg>
-                      Judges
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
-                      whileTap={{ scale: 0.98 }}
-                      className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      Settings
-                    </motion.button>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-8"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-8"
           >
-            <div className="flex justify-between items-center mb-6">
+            {/* Header with toggle button */}
+            <div 
+              className="flex justify-between items-center p-6 cursor-pointer border-b border-gray-100"
+              onClick={() => toggleSection('analytics')}
+            >
               <h2 className="text-lg font-semibold text-gray-800">Real-time Analytics</h2>
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-1 text-indigo-600 text-sm font-medium"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <span>Full Report</span>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className="h-5 w-5 text-gray-500" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d={sectionsState.analytics ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} 
+                  />
                 </svg>
               </motion.button>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-gradient-to-br from-indigo-50 to-white p-4 rounded-lg border border-indigo-100">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <p className="text-xs font-medium text-indigo-600 mb-1">Active Users</p>
-                    <h4 className="text-2xl font-bold">1,243</h4>
+            {/* Collapsible content */}
+            <motion.div 
+              initial={false}
+              animate={{ 
+                height: sectionsState.analytics ? "auto" : 0,
+                opacity: sectionsState.analytics ? 1 : 0
+              }}
+              transition={{ duration: 0.3 }}
+              style={{ overflow: "hidden" }}
+            >
+              <div className="p-6">
+                {/* Your existing analytics content */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="bg-gradient-to-br from-indigo-50 to-white p-4 rounded-lg border border-indigo-100">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <p className="text-xs font-medium text-indigo-600 mb-1">Active Users</p>
+                        <h4 className="text-2xl font-bold">1,243</h4>
+                      </div>
+                      <div className="p-2 bg-indigo-100 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="text-green-600 text-sm font-medium flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                        12%
+                      </span>
+                      <span className="ml-2 text-xs text-gray-500">vs last week</span>
+                    </div>
                   </div>
-                  <div className="p-2 bg-indigo-100 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+                  
+                  <div className="bg-gradient-to-br from-blue-50 to-white p-4 rounded-lg border border-blue-100">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <p className="text-xs font-medium text-blue-600 mb-1">Team Registration</p>
+                        <h4 className="text-2xl font-bold">85</h4>
+                      </div>
+                      <div className="p-2 bg-blue-100 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="text-green-600 text-sm font-medium flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                        24%
+                      </span>
+                      <span className="ml-2 text-xs text-gray-500">vs last event</span>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-green-600 text-sm font-medium flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                    </svg>
-                    12%
-                  </span>
-                  <span className="ml-2 text-xs text-gray-500">vs last week</span>
+                  
+                  <div className="bg-gradient-to-br from-green-50 to-white p-4 rounded-lg border border-green-100">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <p className="text-xs font-medium text-green-600 mb-1">Mentor Hours</p>
+                        <h4 className="text-2xl font-bold">523</h4>
+                      </div>
+                      <div className="p-2 bg-green-100 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="text-green-600 text-sm font-medium flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                        8%
+                      </span>
+                      <span className="ml-2 text-xs text-gray-500">vs last month</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-purple-50 to-white p-4 rounded-lg border border-purple-100">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <p className="text-xs font-medium text-purple-600 mb-1">Sponsor ROI</p>
+                        <h4 className="text-2xl font-bold">134%</h4>
+                      </div>
+                      <div className="p-2 bg-purple-100 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="text-green-600 text-sm font-medium flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                        18%
+                      </span>
+                      <span className="ml-2 text-xs text-gray-500">vs last year</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-              
-              <div className="bg-gradient-to-br from-blue-50 to-white p-4 rounded-lg border border-blue-100">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <p className="text-xs font-medium text-blue-600 mb-1">Team Registration</p>
-                    <h4 className="text-2xl font-bold">85</h4>
-                  </div>
-                  <div className="p-2 bg-blue-100 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-green-600 text-sm font-medium flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                    </svg>
-                    24%
-                  </span>
-                  <span className="ml-2 text-xs text-gray-500">vs last event</span>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-br from-green-50 to-white p-4 rounded-lg border border-green-100">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <p className="text-xs font-medium text-green-600 mb-1">Mentor Hours</p>
-                    <h4 className="text-2xl font-bold">523</h4>
-                  </div>
-                  <div className="p-2 bg-green-100 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-green-600 text-sm font-medium flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                    </svg>
-                    8%
-                  </span>
-                  <span className="ml-2 text-xs text-gray-500">vs last month</span>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-br from-purple-50 to-white p-4 rounded-lg border border-purple-100">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <p className="text-xs font-medium text-purple-600 mb-1">Sponsor ROI</p>
-                    <h4 className="text-2xl font-bold">134%</h4>
-                  </div>
-                  <div className="p-2 bg-purple-100 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-green-600 text-sm font-medium flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                    </svg>
-                    18%
-                  </span>
-                  <span className="ml-2 text-xs text-gray-500">vs last year</span>
-                </div>
-              </div>
-            </div>
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>
