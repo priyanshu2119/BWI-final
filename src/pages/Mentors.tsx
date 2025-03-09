@@ -102,6 +102,90 @@ const mentors = [
     reviews: 17,
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
     gradient: "from-red-500 to-pink-500"
+  },
+  {
+    id: 7,
+    name: "Dr. Aisha Patel",
+    role: "Data Science Director",
+    company: "DataInsight Labs",
+    expertise: ["Data Science", "Big Data", "Machine Learning", "Statistical Analysis"],
+    bio: "Dr. Patel leads data science initiatives for Fortune 500 companies with 12+ years of experience. She specializes in turning complex data into actionable business insights.",
+    availability: "Weekends, morning hours",
+    languages: ["English", "Hindi", "Gujarati"],
+    rating: 4.9,
+    reviews: 34,
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200",
+    gradient: "from-teal-500 to-emerald-500"
+  },
+  {
+    id: 8,
+    name: "Thomas Wright",
+    role: "Game Development Lead",
+    company: "Pixel Studios",
+    expertise: ["Unity3D", "Game Design", "3D Modeling", "C#"],
+    bio: "Thomas has shipped over 15 successful games across multiple platforms. He's passionate about mentoring new game developers and sharing industry best practices.",
+    availability: "Tuesday & Friday evenings",
+    languages: ["English", "German"],
+    rating: 4.7,
+    reviews: 29,
+    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200",
+    gradient: "from-blue-500 to-violet-500"
+  },
+  {
+    id: 9,
+    name: "Maria Rodriguez",
+    role: "Security Engineer",
+    company: "CyberShield",
+    expertise: ["Cybersecurity", "Penetration Testing", "Network Security", "Ethical Hacking"],
+    bio: "Maria is a certified ethical hacker with expertise in identifying and mitigating security vulnerabilities. She's helped secure systems for major financial institutions.",
+    availability: "Weekdays, evening hours",
+    languages: ["English", "Spanish", "Portuguese"],
+    rating: 5.0,
+    reviews: 22,
+    image: "https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?auto=format&fit=crop&q=80&w=200",
+    gradient: "from-red-500 to-orange-500"
+  },
+  {
+    id: 10,
+    name: "Wei Zhang",
+    role: "Mobile Architecture Specialist",
+    company: "AppFusion",
+    expertise: ["iOS Development", "Swift", "Android", "Kotlin", "React Native"],
+    bio: "Wei has architected mobile applications used by millions of users globally. He specializes in cross-platform development and optimizing app performance.",
+    availability: "Weekends and Thursday evenings",
+    languages: ["English", "Mandarin", "Cantonese"],
+    rating: 4.8,
+    reviews: 41,
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200",
+    gradient: "from-amber-500 to-yellow-500"
+  },
+  {
+    id: 11,
+    name: "Sophia Lee",
+    role: "AR/VR Innovation Lead",
+    company: "Immersive Future",
+    expertise: ["Augmented Reality", "Virtual Reality", "Unity3D", "3D Modeling"],
+    bio: "Sophia is pioneering AR/VR applications for education and training. She's worked on cutting-edge projects for major tech companies and loves mentoring future XR developers.",
+    availability: "Flexible schedule",
+    languages: ["English", "Korean"],
+    rating: 4.9,
+    reviews: 18,
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
+    gradient: "from-indigo-600 to-blue-600"
+  },
+  {
+    id: 12,
+    name: "Jamal Washington",
+    role: "DevOps Architect",
+    company: "CloudScale Systems",
+    expertise: ["DevOps", "AWS", "Kubernetes", "Terraform", "CI/CD Pipelines"],
+    bio: "Jamal has transformed infrastructure operations for startups and enterprises alike. He specializes in scalable cloud architecture and automating deployment workflows.",
+    availability: "Monday & Wednesday, all day",
+    languages: ["English"],
+    rating: 4.8,
+    reviews: 25,
+    image: "https://images.unsplash.com/photo-1539935403468-73d41cac7005?auto=format&fit=crop&q=80&w=200",
+    gradient: "from-purple-600 to-violet-600"
   }
 ];
 
@@ -358,15 +442,13 @@ const Mentors = () => {
                       <div className="flex justify-between items-start">
                         <div>
                           <h3 className="text-xl font-semibold text-gray-800">{mentor.name}</h3>
-                          <p className="text-sm text-gray-500">
-                            {mentor.role} • {mentor.company}
-                          </p>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="flex mr-1">
-                            {renderStars(mentor.rating)}
+                          <p className="text-sm text-gray-500">{mentor.role} at {mentor.company}</p>
+                          <div className="flex items-center mt-1">
+                            <div className="flex mr-1">
+                              {renderStars(mentor.rating)}
+                            </div>
+                            <span className="text-sm text-gray-600">{mentor.rating} ({mentor.reviews} reviews)</span>
                           </div>
-                          <span className="text-sm text-gray-500">({mentor.reviews})</span>
                         </div>
                       </div>
                     </div>
@@ -380,7 +462,7 @@ const Mentors = () => {
                       {mentor.expertise.map((skill, index) => (
                         <motion.span
                           key={index}
-                          className="px-3 py-1 bg-blue-50 text-blue-700 text-xs rounded-full flex items-center"
+                          className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full flex items-center"
                           whileHover={{ scale: 1.05 }}
                         >
                           <Hash className="w-3 h-3 mr-1" />
@@ -394,17 +476,55 @@ const Mentors = () => {
                     <div>
                       <div className="flex items-center text-gray-500 mb-1">
                         <Clock className="w-4 h-4 mr-1" />
-                        <span className="text-xs uppercase tracking-wide">Availability</span>
+                        Availability
                       </div>
                       <p className="text-gray-700">{mentor.availability}</p>
                     </div>
                     <div>
                       <div className="flex items-center text-gray-500 mb-1">
                         <Globe className="w-4 h-4 mr-1" />
-                        <span className="text-xs uppercase tracking-wide">Languages</span>
+                        Languages
                       </div>
-                      <p className="text-gray-700">{mentor.languages.join(", ")}</p>
+                      <p className="text-gray-700">{mentor.languages.join(', ')}</p>
                     </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <div className="flex items-center text-gray-500 mb-1">
+                        <Briefcase className="w-4 h-4 mr-1" />
+                        Company
+                      </div>
+                      <p className="text-gray-700">{mentor.company}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <div className="flex items-center text-gray-500 mb-1">
+                        <Award className="w-4 h-4 mr-1" />
+                        Experience
+                      </div>
+                      <p className="text-gray-700">Expert Level</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 mt-2">
+                    <motion.button
+                      onClick={() => handleRequestMentorship(mentor.id)}
+                      className="flex-1 px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-lg flex items-center justify-center gap-2"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <UserPlus className="w-4 h-4" />
+                      Request Mentorship
+                    </motion.button>
+                    
+                    <motion.button
+                      className="px-4 py-2 border border-gray-300 rounded-lg flex items-center justify-center gap-2"
+                      whileHover={{ scale: 1.02, backgroundColor: "rgba(0,0,0,0.03)" }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                      Message
+                    </motion.button>
                   </div>
                   
                   <AnimatePresence>
@@ -416,25 +536,8 @@ const Mentors = () => {
                         transition={{ duration: 0.3 }}
                         className="pt-4 border-t border-gray-100"
                       >
-                        <div className="flex gap-3">
-                          <motion.button
-                            onClick={() => handleRequestMentorship(mentor.id)}
-                            className="flex-1 px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-lg flex items-center justify-center gap-2"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            <UserPlus className="w-4 h-4" />
-                            Request Mentorship
-                          </motion.button>
-                          <motion.button
-                            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg flex items-center justify-center gap-2"
-                            whileHover={{ scale: 1.02, backgroundColor: "rgba(0,0,0,0.03)" }}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            <MessageSquare className="w-4 h-4" />
-                            Message
-                          </motion.button>
-                        </div>
+                        {/* Additional mentor details could go here */}
+                        {/* The duplicate buttons have been removed */}
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -512,10 +615,11 @@ const Mentors = () => {
                       />
                     </div>
                     <div>
-                      <p className="font-medium">{mentors.find(m => m.id === mentorForRequest)?.name}</p>
+                      <h3 className="font-medium">
+                        {mentors.find(m => m.id === mentorForRequest)?.name}
+                      </h3>
                       <p className="text-sm text-gray-500">
-                        {mentors.find(m => m.id === mentorForRequest)?.role} • 
-                        {mentors.find(m => m.id === mentorForRequest)?.company}
+                        {mentors.find(m => m.id === mentorForRequest)?.role}
                       </p>
                     </div>
                   </div>
@@ -524,7 +628,7 @@ const Mentors = () => {
                 <form className="space-y-6">
                   <div>
                     <label htmlFor="topic" className="block text-sm font-medium text-gray-700 mb-2">
-                      Topic for Discussion
+                      Topic
                     </label>
                     <input
                       type="text"
@@ -536,7 +640,7 @@ const Mentors = () => {
                   
                   <div>
                     <label htmlFor="goal" className="block text-sm font-medium text-gray-700 mb-2">
-                      Your Goals
+                      Learning Goals
                     </label>
                     <textarea
                       id="goal"
@@ -550,36 +654,23 @@ const Mentors = () => {
                     <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
                       Preferred Date & Time
                     </label>
-                    <div className="flex gap-4">
-                      <input
-                        type="date"
-                        id="date"
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      />
-                      <input
-                        type="time"
-                        id="time"
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      />
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Mentor's availability: {mentors.find(m => m.id === mentorForRequest)?.availability}
-                    </p>
+                    <input
+                      type="datetime-local"
+                      id="date"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
                   </div>
                   
                   <div>
-                    <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-2">
-                      Session Duration
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                      Additional Message
                     </label>
-                    <select
-                      id="duration"
+                    <textarea
+                      id="message"
+                      rows={3}
+                      placeholder="Any specific questions or areas you'd like to focus on"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    >
-                      <option value="15">15 minutes</option>
-                      <option value="30">30 minutes</option>
-                      <option value="45">45 minutes</option>
-                      <option value="60">60 minutes</option>
-                    </select>
+                    />
                   </div>
                   
                   <div className="flex justify-end gap-3 pt-4">
