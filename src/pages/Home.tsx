@@ -10,8 +10,9 @@ import ParticlesBg from 'particles-bg';
 const Home = () => {
   // For parallax scroll effect
   const { scrollY } = useScroll();
-  const translateY = useTransform(scrollY, [0, 1000], [0, -150]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0.2]);
+  // Note: For smooth scrolling, consider using CSS scroll-behavior or another approach
+  const translateY = useTransform(scrollY, [0, 1500], [0, -150]); // Changed from 1000 to 1500
+  const opacity = useTransform(scrollY, [0, 700], [1, 0.2]); // Changed from 300 to 700
   const scrollProgress = useTransform(scrollY, 
     [0, document.body.scrollHeight - window.innerHeight], 
     [0, 1]
@@ -120,7 +121,14 @@ const Home = () => {
       </div>
 
       {/* Main content with scroll animations */}
-      <motion.div style={{ y: translateY, opacity }} className="relative z-10">
+      <motion.div 
+        style={{ 
+          y: translateY, 
+          opacity,
+          willChange: "transform, opacity" // Add this for hardware acceleration
+        }} 
+        className="relative z-10"
+      >
         <HeroSection />
        
       </motion.div>
