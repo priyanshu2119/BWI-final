@@ -507,7 +507,7 @@ const Mentors = () => {
 
         {/* Featured Mentors Carousel - Add after the search bar */}
         <motion.div 
-          className="mb-10 overflow-hidden"
+          className="mb-10 relative"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
@@ -516,18 +516,12 @@ const Mentors = () => {
             <h2 className="text-xl font-bold text-gray-900">Featured Mentors</h2>
             <div className="flex items-center gap-4">
               <div className="flex gap-1">
-                {Array.from({ length: Math.ceil(mentors.slice(0, 9).length / 4) }).map((_, i) => (
+                {Array.from({ length: Math.ceil(mentors.length / 4) }).map((_, i) => (
                   <motion.button
                     key={i}
                     className={`w-2 h-2 rounded-full ${i === Math.floor(carouselIndex / 4) ? 'bg-indigo-600' : 'bg-gray-300'}`}
                     onClick={() => {
                       setCarouselIndex(i * 4);
-                      if (carouselRef.current) {
-                        carouselRef.current.scrollTo({
-                          left: i * 4 * 300,
-                          behavior: 'smooth'
-                        });
-                      }
                     }}
                     whileHover={{ scale: 1.2 }}
                     animate={{ scale: i === Math.floor(carouselIndex / 4) ? 1.2 : 1 }}
@@ -553,57 +547,76 @@ const Mentors = () => {
             </div>
           </div>
           
-          <div 
-            className="flex gap-4 overflow-hidden pb-4" 
-            ref={carouselRef}
-            onMouseEnter={() => setAutoPlayCarousel(false)}
-            onMouseLeave={() => setAutoPlayCarousel(true)}
-          >
-            {mentors.slice(0, 9).map((mentor, idx) => (
-              <motion.div
-                key={`featured-${mentor.id}`}
-                className="min-w-[280px] bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-all flex-shrink-0"
-                whileHover={{ y: -4 }}
-                animate={{ 
-                  x: idx === carouselIndex ? 0 : idx < carouselIndex ? -300 : 300,
-                  opacity: (idx >= carouselIndex && idx < carouselIndex + 4) ? 1 : 0.5,
-                  scale: (idx >= carouselIndex && idx < carouselIndex + 4) ? 1 : 0.95
-                }}
-                transition={{ duration: 0.5 }}
-              >
-                <div className={`h-24 w-full bg-gradient-to-r ${mentor.gradient}`}></div>
-                <div className="px-4 pb-4 relative">
-                  <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-white absolute top-[-32px] left-4 shadow-sm">
-                    <img src={mentor.image} alt={mentor.name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="mt-[32px] pt-2"> {/* Fixed spacing to prevent overlap */}
-                    <h3 className="font-semibold text-gray-900">{mentor.name}</h3>
-                    <p className="text-xs text-gray-500">{mentor.role}</p>
-                    <div className="flex mt-2">
-                      {renderStars(mentor.rating)}
-                      <span className="text-xs text-gray-500 ml-1">{mentor.rating}</span>
+          <div className="overflow-hidden">
+            <motion.div 
+              className="flex gap-4"
+              animate={{ x: `calc(-${carouselIndex * 100}% / 4 - ${carouselIndex * 1}rem / 4)` }}
+              transition={{ ease: "easeInOut", duration: 0.5 }}
+            >
+              {mentors.map((mentor, idx) => (
+                <motion.div
+                  key={`featured-${mentor.id}`}
+                  className="min-w-[calc(25%-0.75rem)] bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-all"
+                  whileHover={{ y: -4 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: idx * 0.1, duration: 0.3 }}
+                >
+                  <div className={`h-24 w-full bg-gradient-to-r ${mentor.gradient}`}></div>
+                  <div className="px-4 pb-4 relative">
+                    {/* Fix image positioning - Move up by adjusting top position */}
+                    <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-white absolute top-[-28px] left-4 shadow-sm">
+                      <img src={mentor.image} alt={mentor.name} className="w-full h-full object-cover" />
                     </div>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {mentor.expertise.slice(0, 2).map((skill, idx) => (
-                        <span key={idx} className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-full">{skill}</span>
-                      ))}
-                      {mentor.expertise.length > 2 && (
-                        <span className="px-2 py-0.5 bg-gray-50 text-gray-500 text-xs rounded-full">+{mentor.expertise.length - 2}</span>
-                      )}
+                    <div className="pt-10"> {/* Increased padding-top to make room for the image */}
+                      <h3 className="font-semibold text-gray-900">{mentor.name}</h3>
+                      <p className="text-xs text-gray-500">{mentor.role}</p>
+                      <div className="flex mt-1">
+                        {renderStars(mentor.rating)}
+                        <span className="text-xs text-gray-500 ml-1">{mentor.rating}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {mentor.expertise.slice(0, 2).map((skill, idx) => (
+                          <span key={idx} className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-full">{skill}</span>
+                        ))}
+                        {mentor.expertise.length > 2 && (
+                          <span className="px-2 py-0.5 bg-gray-50 text-gray-500 text-xs rounded-full">+{mentor.expertise.length - 2}</span>
+                        )}
+                      </div>
+                      <motion.button 
+                        className="w-full mt-3 px-4 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm rounded-lg transition-colors"
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleMentorClick(mentor.id)}
+                      >
+                        View Profile
+                      </motion.button>
                     </div>
-                    <motion.button 
-                      className="w-full mt-3 px-4 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm rounded-lg transition-colors"
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleMentorClick(mentor.id)}
-                    >
-                      View Profile
-                    </motion.button>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
+          
+          {/* Optional navigation arrows */}
+          <button 
+            className="absolute top-1/2 -left-2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md z-10"
+            onClick={() => setCarouselIndex(Math.max(0, carouselIndex - 1))}
+            style={{ display: carouselIndex === 0 ? 'none' : 'block' }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button 
+            className="absolute top-1/2 -right-2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md z-10"
+            onClick={() => setCarouselIndex(Math.min(mentors.length - 4, carouselIndex + 1))}
+            style={{ display: carouselIndex >= mentors.length - 4 ? 'none' : 'block' }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </motion.div>
 
         {/* Mentors Grid */}
@@ -1097,6 +1110,207 @@ const Mentors = () => {
           </div>
         </div>
       </div>
+
+      {/* Mentor Application Modal */}
+      {showMentorApplicationModal && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          onClick={() => setShowMentorApplicationModal(false)}
+        >
+          <div 
+            className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+            style={{ position: 'relative', top: 'auto', transform: 'none' }}
+          >
+            <div className="bg-gradient-to-r from-indigo-600 to-blue-700 px-6 py-6 rounded-t-xl">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold text-white">Apply to Become a Mentor</h2>
+                  <p className="text-white/80">Share your expertise and help shape the next generation</p>
+                </div>
+                <button
+                  onClick={() => setShowMentorApplicationModal(false)}
+                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6">
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                alert("Thank you for applying! We'll review your application and get back to you soon.");
+                setShowMentorApplicationModal(false);
+                setMentorApplication({
+                  name: '',
+                  email: '',
+                  expertise: [],
+                  experience: '',
+                  linkedin: '',
+                  availability: '',
+                  motivation: ''
+                });
+              }}>
+                {/* Personal Information */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      value={mentorApplication.name}
+                      onChange={(e) => setMentorApplication({...mentorApplication, name: e.target.value})}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      placeholder="Your full name"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      Email Address <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      value={mentorApplication.email}
+                      onChange={(e) => setMentorApplication({...mentorApplication, email: e.target.value})}
+                      required
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      placeholder="your.email@example.com"
+                    />
+                  </div>
+                </div>
+                
+                {/* Expertise */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Areas of Expertise <span className="text-red-500">*</span>
+                    <span className="text-xs font-normal text-gray-500 ml-2">(Select up to 5)</span>
+                  </label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-2">
+                    {expertiseOptions.slice(1).map((expertise, index) => (
+                      <div
+                        key={index}
+                        className={`px-3 py-2 rounded-lg border cursor-pointer flex items-center justify-between ${
+                          mentorApplication.expertise.includes(expertise)
+                            ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                        onClick={() => handleExpertiseChange(expertise)}
+                      >
+                        <span className="text-sm">{expertise}</span>
+                        {mentorApplication.expertise.includes(expertise) && (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Experience */}
+                <div className="mb-4">
+                  <label htmlFor="experience" className="block text-sm font-medium text-gray-700 mb-1">
+                    Professional Experience <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    id="experience"
+                    value={mentorApplication.experience}
+                    onChange={(e) => setMentorApplication({...mentorApplication, experience: e.target.value})}
+                    required
+                    rows={3}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="Briefly describe your professional background and current role"
+                  />
+                </div>
+                
+                {/* LinkedIn */}
+                <div className="mb-4">
+                  <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 mb-1">
+                    LinkedIn Profile
+                  </label>
+                  <input
+                    type="url"
+                    id="linkedin"
+                    value={mentorApplication.linkedin}
+                    onChange={(e) => setMentorApplication({...mentorApplication, linkedin: e.target.value})}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="https://linkedin.com/in/yourprofile"
+                  />
+                </div>
+                
+                {/* Availability */}
+                <div className="mb-4">
+                  <label htmlFor="availability" className="block text-sm font-medium text-gray-700 mb-1">
+                    Availability <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    id="availability"
+                    value={mentorApplication.availability}
+                    onChange={(e) => setMentorApplication({...mentorApplication, availability: e.target.value})}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="">Select your availability</option>
+                    <option value="1-2 hours weekly">1-2 hours weekly</option>
+                    <option value="3-5 hours weekly">3-5 hours weekly</option>
+                    <option value="5+ hours weekly">5+ hours weekly</option>
+                    <option value="Weekends only">Weekends only</option>
+                    <option value="Weekday evenings">Weekday evenings</option>
+                    <option value="Flexible">Flexible</option>
+                  </select>
+                </div>
+                
+                {/* Motivation */}
+                <div className="mb-6">
+                  <label htmlFor="motivation" className="block text-sm font-medium text-gray-700 mb-1">
+                    Why do you want to be a mentor? <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    id="motivation"
+                    value={mentorApplication.motivation}
+                    onChange={(e) => setMentorApplication({...mentorApplication, motivation: e.target.value})}
+                    required
+                    rows={3}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="Tell us what motivates you to become a mentor"
+                  />
+                </div>
+                
+                {/* Buttons */}
+                <div className="flex justify-end gap-3">
+                  <button
+                    type="button"
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg"
+                    onClick={() => setShowMentorApplicationModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
+                    disabled={
+                      !mentorApplication.name || 
+                      !mentorApplication.email || 
+                      mentorApplication.expertise.length === 0 ||
+                      !mentorApplication.experience ||
+                      !mentorApplication.availability ||
+                      !mentorApplication.motivation
+                    }
+                  >
+                    Submit Application
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
