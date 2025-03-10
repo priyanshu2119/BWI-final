@@ -14,7 +14,11 @@ import {
   Hash,
   Bookmark,
   Eye,
-  ThumbsUp
+  ThumbsUp,
+  Folder,
+  FolderPlus,
+  Plus,
+  CheckCircle
 } from 'lucide-react';
 
 const projects = [
@@ -162,7 +166,67 @@ const Projects = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [likedProjects, setLikedProjects] = useState<number[]>([]);
   const [savedProjects, setSavedProjects] = useState<number[]>([]);
-  
+  const [previewProject, setPreviewProject] = useState<null | typeof projects[0]>(null);
+  const [collections, setCollections] = useState<{ id: number; name: string; description: string; projects: number[] }[]>(() => {
+    // Try to load from localStorage on initial render
+    const savedCollections = localStorage.getItem('projectCollections');
+    return savedCollections ? JSON.parse(savedCollections) : [
+      { id: 1, name: "Favorites", description: "My favorite projects", projects: [] },
+      { id: 2, name: "Learning Resources", description: "Projects I want to learn from", projects: [] }
+    ];
+  });
+  const [showCollectionModal, setShowCollectionModal] = useState(false);
+  const [collectionToEdit, setCollectionToEdit] = useState<number | null>(null);
+  const [newCollection, setNewCollection] = useState({ name: '', description: '' });
+  const [showAddToCollectionDropdown, setShowAddToCollectionDropdown] = useState<number | null>(null);
+
+  // Add this effect to save collections to localStorage when they change
+  React.useEffect(() => {
+    localStorage.setItem('projectCollections', JSON.stringify(collections));
+  }, [collections]);
+
+  // Add these functions to handle collections
+  const handleCreateCollection = () => {
+    if (!newCollection.name) return;
+    
+    const newId = collections.length > 0 ? Math.max(...collections.map(c => c.id)) + 1 : 1;
+    
+    setCollections([
+      ...collections,
+      {
+        id: newId,
+        name: newCollection.name,
+        description: newCollection.description,
+        projects: []
+      }
+    ]);
+    
+    setNewCollection({ name: '', description: '' });
+    setShowCollectionModal(false);
+  };
+
+  const handleAddToCollection = (projectId: number, collectionId: number) => {
+    setCollections(collections.map(collection => {
+      if (collection.id === collectionId) {
+        // Check if project is already in collection
+        if (collection.projects.includes(projectId)) {
+          return {
+            ...collection,
+            projects: collection.projects.filter(id => id !== projectId)
+          };
+        } else {
+          return {
+            ...collection,
+            projects: [...collection.projects, projectId]
+          };
+        }
+      }
+      return collection;
+    }));
+    
+    setShowAddToCollectionDropdown(null);
+  };
+
   const filteredProjects = projects.filter(project => {
     const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           project.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -194,6 +258,28 @@ const Projects = () => {
         ? prev.filter(id => id !== projectId)
         : [...prev, projectId]
     );
+  };
+
+  // Add this function to get related projects
+  const getRelatedProjects = (projectId: number) => {
+    // Find current project's technologies
+    const currentProject = projects.find(p => p.id === projectId);
+    if (!currentProject) return [];
+    
+    // Find projects with similar technologies, excluding current project
+    return projects
+      .filter(p => p.id !== projectId)
+      .map(project => {
+        const commonTech = project.technologies.filter(tech => 
+          currentProject.technologies.includes(tech)
+        );
+        return {
+          ...project,
+          relevance: commonTech.length / currentProject.technologies.length
+        };
+      })
+      .sort((a, b) => b.relevance - a.relevance)
+      .slice(0, 4);
   };
 
   return (
@@ -246,6 +332,34 @@ const Projects = () => {
               <Search className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
             </div>
             
+            <div className="flex gap-2 overflow-x-auto py-4 scrollbar-hide">
+              {["All", "AI/ML", "Web3", "Mobile", "Cloud", "IoT", "Design", "DevOps"].map((category) => (
+                <motion.button
+                  key={category}
+                  className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${
+                    category === "All" 
+                      ? "bg-indigo-600 text-white" 
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    // Implementation for category filtering
+                    if (category === "All") {
+                      setSelectedTech("All Technologies");
+                    } else if (category === "AI/ML") {
+                      setSelectedTech("TensorFlow");
+                    } else if (category === "Web3") {
+                      setSelectedTech("Solidity");
+                    }
+                    // Add more mappings as needed
+                  }}
+                >
+                  {category}
+                </motion.button>
+              ))}
+            </div>
+
             <div className="flex gap-3 w-full md:w-auto">
               <motion.button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
@@ -313,6 +427,113 @@ const Projects = () => {
               </motion.div>
             )}
           </AnimatePresence>
+        </motion.div>
+
+        {/* Collections Section */}
+        <motion.div 
+          className="mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold text-gray-800">My Collections</h2>
+            <motion.button
+              className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg flex items-center gap-1.5 text-sm"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                setCollectionToEdit(null);
+                setNewCollection({ name: '', description: '' });
+                setShowCollectionModal(true);
+              }}
+            >
+              <FolderPlus className="w-4 h-4" />
+              New Collection
+            </motion.button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-x-auto pb-2">
+            {collections.map(collection => (
+              <motion.div
+                key={collection.id}
+                className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all flex flex-col"
+                whileHover={{ y: -4 }}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className={`p-2 rounded-lg ${collection.projects.length > 0 ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-500'}`}>
+                      <Folder className="w-5 h-5" />
+                    </div>
+                    <h3 className="font-semibold text-gray-800">{collection.name}</h3>
+                  </div>
+                  <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">
+                    {collection.projects.length} projects
+                  </span>
+                </div>
+                
+                <p className="text-sm text-gray-500 mb-3 flex-grow">
+                  {collection.description}
+                </p>
+                
+                {collection.projects.length > 0 ? (
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {collection.projects.slice(0, 3).map(projectId => {
+                      const project = projects.find(p => p.id === projectId);
+                      return project ? (
+                        <div key={projectId} className="w-8 h-8 rounded overflow-hidden">
+                          <img 
+                            src={project.image} 
+                            alt={project.title} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : null;
+                    })}
+                    {collection.projects.length > 3 && (
+                      <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-xs font-medium text-gray-600">
+                        +{collection.projects.length - 3}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-400 italic mb-3">No projects added yet</p>
+                )}
+                
+                <div className="flex gap-2">
+                  <motion.button
+                    className="flex-1 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      // Open a modal or page showing all projects in this collection
+                      // This could be implemented as another modal
+                    }}
+                  >
+                    View Projects
+                  </motion.button>
+                  <motion.button
+                    className="px-2 py-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => {
+                      // Edit collection
+                      setCollectionToEdit(collection.id);
+                      setNewCollection({
+                        name: collection.name,
+                        description: collection.description
+                      });
+                      setShowCollectionModal(true);
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
+                  </motion.button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
 
         {/* Featured Projects */}
@@ -428,6 +649,65 @@ const Projects = () => {
                           >
                             <Bookmark className={`w-5 h-5 ${savedProjects.includes(project.id) ? 'fill-indigo-500' : ''}`} />
                           </motion.button>
+
+                          <motion.button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setShowAddToCollectionDropdown(showAddToCollectionDropdown === project.id ? null : project.id);
+                            }}
+                            className={`p-2 rounded-full backdrop-blur-sm ${
+                              collections.some(c => c.projects.includes(project.id)) 
+                                ? 'bg-white/30 text-green-500' 
+                                : 'bg-white/20 text-white hover:bg-white/30'
+                            }`}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            <FolderPlus className="w-5 h-5" />
+                          </motion.button>
+
+                          {/* Collection Dropdown */}
+                          {showAddToCollectionDropdown === project.id && (
+                            <div 
+                              className="absolute right-4 top-16 bg-white shadow-xl rounded-lg w-56 z-10 overflow-hidden"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <div className="p-3 border-b border-gray-100">
+                                <h4 className="font-medium text-gray-800 text-sm">Add to collection</h4>
+                              </div>
+                              <div className="max-h-60 overflow-y-auto">
+                                {collections.map(collection => (
+                                  <motion.div
+                                    key={collection.id}
+                                    className="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer"
+                                    onClick={() => handleAddToCollection(project.id, collection.id)}
+                                    whileHover={{ backgroundColor: "rgba(0,0,0,0.03)" }}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <Folder className="w-4 h-4 text-gray-500" />
+                                      <span className="text-sm">{collection.name}</span>
+                                    </div>
+                                    {collection.projects.includes(project.id) && (
+                                      <CheckCircle className="w-4 h-4 text-green-500" />
+                                    )}
+                                  </motion.div>
+                                ))}
+                              </div>
+                              <div className="p-2 bg-gray-50">
+                                <button 
+                                  className="w-full p-2 text-sm text-indigo-600 hover:bg-indigo-50 rounded-lg flex items-center justify-center gap-1"
+                                  onClick={() => {
+                                    setCollectionToEdit(null);
+                                    setNewCollection({ name: '', description: '' });
+                                    setShowCollectionModal(true);
+                                  }}
+                                >
+                                  <Plus className="w-4 h-4" />
+                                  New Collection
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -446,11 +726,16 @@ const Projects = () => {
               .map((project) => (
                 <motion.div
                   key={project.id}
-                  className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg flex flex-col"
+                  className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg flex flex-col transform-gpu"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
-                  whileHover={{ y: -4 }}
+                  whileHover={{ 
+                    y: -8, 
+                    rotateY: 5, 
+                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" 
+                  }}
+                  onClick={() => setPreviewProject(project)}
                 >
                   <div className="h-48 overflow-hidden relative">
                     <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-80`}></div>
@@ -491,6 +776,65 @@ const Projects = () => {
                       >
                         <Bookmark className={`w-5 h-5 ${savedProjects.includes(project.id) ? 'fill-indigo-500' : ''}`} />
                       </motion.button>
+
+                      <motion.button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowAddToCollectionDropdown(showAddToCollectionDropdown === project.id ? null : project.id);
+                        }}
+                        className={`p-2 rounded-full backdrop-blur-sm ${
+                          collections.some(c => c.projects.includes(project.id)) 
+                            ? 'bg-white/30 text-green-500' 
+                            : 'bg-white/20 text-white hover:bg-white/30'
+                        }`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <FolderPlus className="w-5 h-5" />
+                      </motion.button>
+
+                      {/* Collection Dropdown */}
+                      {showAddToCollectionDropdown === project.id && (
+                        <div 
+                          className="absolute right-4 top-16 bg-white shadow-xl rounded-lg w-56 z-10 overflow-hidden"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="p-3 border-b border-gray-100">
+                            <h4 className="font-medium text-gray-800 text-sm">Add to collection</h4>
+                          </div>
+                          <div className="max-h-60 overflow-y-auto">
+                            {collections.map(collection => (
+                              <motion.div
+                                key={collection.id}
+                                className="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer"
+                                onClick={() => handleAddToCollection(project.id, collection.id)}
+                                whileHover={{ backgroundColor: "rgba(0,0,0,0.03)" }}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <Folder className="w-4 h-4 text-gray-500" />
+                                  <span className="text-sm">{collection.name}</span>
+                                </div>
+                                {collection.projects.includes(project.id) && (
+                                  <CheckCircle className="w-4 h-4 text-green-500" />
+                                )}
+                              </motion.div>
+                            ))}
+                          </div>
+                          <div className="p-2 bg-gray-50">
+                            <button 
+                              className="w-full p-2 text-sm text-indigo-600 hover:bg-indigo-50 rounded-lg flex items-center justify-center gap-1"
+                              onClick={() => {
+                                setCollectionToEdit(null);
+                                setNewCollection({ name: '', description: '' });
+                                setShowCollectionModal(true);
+                              }}
+                            >
+                              <Plus className="w-4 h-4" />
+                              New Collection
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
@@ -626,6 +970,267 @@ const Projects = () => {
           </div>
         </div>
       </div>
+
+      {/* Project Preview Modal */}
+      {previewProject && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-4xl mx-4">
+            <div className="relative">
+              <div className="h-64 overflow-hidden relative">
+                <div className={`absolute inset-0 bg-gradient-to-br ${previewProject.gradient} opacity-80`}></div>
+                <img 
+                  src={previewProject.image} 
+                  alt={previewProject.title} 
+                  className="w-full h-full object-cover mix-blend-overlay"
+                />
+                {previewProject.winner && (
+                  <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                    <Award className="w-4 h-4 mr-1" />
+                    Winner
+                  </div>
+                )}
+                <div className="absolute top-4 right-4 flex gap-2">
+                  <motion.button
+                    onClick={(e) => handleLikeProject(e, previewProject.id)}
+                    className={`p-2 rounded-full backdrop-blur-sm ${
+                      likedProjects.includes(previewProject.id) 
+                        ? 'bg-white/30 text-red-500' 
+                        : 'bg-white/20 text-white hover:bg-white/30'
+                    }`}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Heart className={`w-5 h-5 ${likedProjects.includes(previewProject.id) ? 'fill-red-500' : ''}`} />
+                  </motion.button>
+                  
+                  <motion.button
+                    onClick={(e) => handleSaveProject(e, previewProject.id)}
+                    className={`p-2 rounded-full backdrop-blur-sm ${
+                      savedProjects.includes(previewProject.id) 
+                        ? 'bg-white/30 text-indigo-500' 
+                        : 'bg-white/20 text-white hover:bg-white/30'
+                    }`}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Bookmark className={`w-5 h-5 ${savedProjects.includes(previewProject.id) ? 'fill-indigo-500' : ''}`} />
+                  </motion.button>
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">{previewProject.title}</h3>
+                <p className="text-gray-600 mb-4">{previewProject.description}</p>
+                
+                <div className="mb-4">
+                  <div className="flex flex-wrap gap-2">
+                    {previewProject.technologies.map((tech, index) => (
+                      <motion.span
+                        key={index}
+                        className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full flex items-center"
+                        whileHover={{ scale: 1.05 }}
+                      >
+                        <Hash className="w-3 h-3 mr-1" />
+                        {tech}
+                      </motion.span>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap justify-between items-center mb-4">
+                  <div className="text-sm text-gray-500">
+                    <span className="mr-4">Team: {previewProject.teamName} ({previewProject.teamSize} members)</span>
+                    <span>{previewProject.hackathon}</span>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <div className="flex items-center text-gray-500 text-sm mr-3">
+                      <Eye className="w-4 h-4 mr-1" />
+                      {previewProject.views}
+                    </div>
+                    <div className="flex items-center text-gray-500 text-sm">
+                      <ThumbsUp className="w-4 h-4 mr-1" />
+                      {previewProject.likes + (likedProjects.includes(previewProject.id) ? 1 : 0)}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex gap-2 mb-4">
+                  <a 
+                    href={previewProject.demoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-lg flex items-center gap-2"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Live Demo
+                  </a>
+                  <a 
+                    href={previewProject.repoUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 border border-gray-300 rounded-lg flex items-center gap-2"
+                  >
+                    <Github className="w-4 h-4" />
+                    Code
+                  </a>
+                </div>
+
+                {/* Add this at the bottom of the project preview modal */}
+                <div className="mt-8 pt-8 border-t border-gray-200">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                    Related Projects
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {getRelatedProjects(previewProject.id).map((project) => (
+                      <motion.div
+                        key={project.id}
+                        className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md cursor-pointer"
+                        whileHover={{ y: -4 }}
+                        onClick={() => {
+                          setPreviewProject(project);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                      >
+                        <div className="h-32 relative overflow-hidden">
+                          <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-80`}></div>
+                          <img 
+                            src={project.image} 
+                            alt={project.title} 
+                            className="w-full h-full object-cover mix-blend-overlay"
+                          />
+                        </div>
+                        <div className="p-4">
+                          <h4 className="font-medium text-gray-900 line-clamp-1">{project.title}</h4>
+                          <p className="text-sm text-gray-500 mt-1 line-clamp-2">{project.description}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => setPreviewProject(null)} 
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Collection Creation/Edit Modal */}
+      <AnimatePresence>
+        {showCollectionModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            onClick={() => setShowCollectionModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-xl font-bold text-gray-800 mb-4">
+                {collectionToEdit !== null ? 'Edit Collection' : 'Create New Collection'}
+              </h2>
+              
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                
+                if (collectionToEdit !== null) {
+                  // Update existing collection
+                  setCollections(collections.map(collection => 
+                    collection.id === collectionToEdit
+                      ? { ...collection, name: newCollection.name, description: newCollection.description }
+                      : collection
+                  ));
+                } else {
+                  // Create new collection
+                  handleCreateCollection();
+                }
+              }}>
+                <div className="mb-4">
+                  <label htmlFor="collection-name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Collection Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="collection-name"
+                    value={newCollection.name}
+                    onChange={(e) => setNewCollection({...newCollection, name: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    required
+                    placeholder="e.g., AI Projects, Learning Resources"
+                  />
+                </div>
+                
+                <div className="mb-6">
+                  <label htmlFor="collection-description" className="block text-sm font-medium text-gray-700 mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    id="collection-description"
+                    value={newCollection.description}
+                    onChange={(e) => setNewCollection({...newCollection, description: e.target.value})}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="What kind of projects will you save here?"
+                  />
+                </div>
+                
+                <div className="flex justify-between">
+                  {collectionToEdit !== null && (
+                    <motion.button
+                      type="button"
+                      className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        if (confirm("Are you sure you want to delete this collection?")) {
+                          setCollections(collections.filter(c => c.id !== collectionToEdit));
+                          setShowCollectionModal(false);
+                        }
+                      }}
+                    >
+                      Delete Collection
+                    </motion.button>
+                  )}
+                  
+                  <div className="flex gap-2 ml-auto">
+                    <motion.button
+                      type="button"
+                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setShowCollectionModal(false)}
+                    >
+                      Cancel
+                    </motion.button>
+                    
+                    <motion.button
+                      type="submit"
+                      className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      disabled={!newCollection.name}
+                    >
+                      {collectionToEdit !== null ? 'Save Changes' : 'Create Collection'}
+                    </motion.button>
+                  </div>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
