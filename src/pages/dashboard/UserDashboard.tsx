@@ -1,10 +1,194 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../../store/authStore';
-import { Calendar, Trophy, Users, Code2 } from 'lucide-react';
+import { Calendar, Trophy, Users, Code2, ArrowRight, Clock, Plus } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Dialog } from '@headlessui/react';
 
 const UserDashboard = () => {
   const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
+  
+  // Add state for modals and actions
+  const [showAddEventModal, setShowAddEventModal] = useState(false);
+  const [newEventData, setNewEventData] = useState({ title: '', date: '', time: '', type: 'meeting' });
+  const [userEvents, setUserEvents] = useState([
+    {
+      icon: <Calendar className="w-6 h-6 text-indigo-600" />,
+      title: "Team Meeting",
+      time: "Today at 3:00 PM",
+      status: "urgent",
+      bgColor: "indigo"
+    },
+    {
+      icon: <Users className="w-6 h-6 text-purple-600" />,
+      title: "Mentor Session",
+      time: "Tomorrow at 2:00 PM",
+      status: "upcoming",
+      bgColor: "purple"
+    },
+    {
+      icon: <Code2 className="w-6 h-6 text-pink-600" />,
+      title: "Code Review",
+      time: "Friday at 11:00 AM",
+      status: "scheduled",
+      bgColor: "pink"
+    }
+  ]);
+
+  // Add these handlers within the UserDashboard component
+
+  // Roadmap handler
+  const handleViewRoadmap = () => {
+    navigate('/dashboard/user/roadmap');
+  };
+
+  // Card click handlers
+  // Define interface for dashboard card types
+  interface DashboardCardProps {
+    title: 'Upcoming Hackathons' | 'Achievements' | 'Team Members' | 'Projects';
+    icon: React.ReactNode;
+    value: string;
+    gradient: string;
+    shadowColor: string;
+  }
+
+  const handleCardClick = (cardType: DashboardCardProps['title']): void => {
+    switch(cardType) {
+      case 'Upcoming Hackathons':
+        navigate('/hackathons', { state: { filter: 'upcoming' } });
+        break;
+      case 'Achievements':
+        navigate('/dashboard/user/achievements');
+        break;
+      case 'Team Members':
+        navigate('/dashboard/user/teams');
+        break;
+      case 'Projects':
+        navigate('/projects', { state: { filter: 'my-projects' } });
+        break;
+    }
+  };
+
+  // Analytics handler
+  const handleViewAnalytics = () => {
+    navigate('/dashboard/user/analytics');
+  };
+
+  // Event handlers
+  // Define interface for event object
+  interface UserEvent {
+    icon: React.ReactNode;
+    title: string;
+    time: string;
+    status: string;
+    bgColor: string;
+  }
+
+  const handleEventClick = (event: UserEvent): void => {
+    navigate('/dashboard/user/event', { state: { event } });
+  };
+
+  const handleAddEvent = () => {
+    setShowAddEventModal(true);
+  };
+
+  const submitNewEvent = () => {
+    if (newEventData.title && newEventData.date && newEventData.time) {
+      // Determine appropriate icon and color based on event type
+      let icon = <Calendar className="w-6 h-6 text-indigo-600" />;
+      let bgColor = "indigo";
+      switch (newEventData.type) {
+        case 'meeting':
+          icon = <Calendar className="w-6 h-6 text-indigo-600" />;
+          bgColor = "indigo";
+          break;
+        case 'mentor':
+          icon = <Users className="w-6 h-6 text-purple-600" />;
+          bgColor = "purple";
+          break;
+        case 'review':
+          icon = <Code2 className="w-6 h-6 text-pink-600" />;
+          bgColor = "pink";
+          break;
+        default:
+          // Default values are already set
+          break;
+      }
+
+      // Create the new event object
+      const newEvent = {
+        icon,
+        title: newEventData.title,
+        time: `${newEventData.date} at ${newEventData.time}`,
+        status: "scheduled",
+        bgColor
+      };
+
+      // Add to events
+      setUserEvents([...userEvents, newEvent]);
+      setShowAddEventModal(false);
+      
+      // Reset form
+      setNewEventData({ title: '', date: '', time: '', type: 'meeting' });
+    }
+  };
+
+  // Friend activity handlers
+  interface Activity {
+    avatar: string;
+    name: string;
+    action: string;
+    project: string;
+    time: string;
+    color: string;
+  }
+
+  const handleActivityClick = (activity: Activity) => {
+    navigate('/dashboard/user/activity', { state: { activity } });
+  };
+
+  const handleViewAllActivity = () => {
+    navigate('/dashboard/user/activity');
+  };
+
+  // Quick action handlers
+  // Define type for quick actions
+  type QuickActionType = 
+    | 'Create Project' 
+    | 'Form Team' 
+    | 'Find Hackathon' 
+    | 'Submit Project' 
+    | 'My Progress' 
+    | 'Leaderboard';
+
+  const handleQuickAction = (action: QuickActionType): void => {
+    switch(action) {
+      case 'Create Project':
+        navigate('/projects/new');
+        break;
+      case 'Form Team':
+        navigate('/teams/new');
+        break;
+      case 'Find Hackathon':
+        navigate('/hackathons');
+        break;
+      case 'Submit Project':
+        navigate('/projects/submit');
+        break;
+      case 'My Progress':
+        navigate('/dashboard/user/progress');
+        break;
+      case 'Leaderboard':
+        navigate('/leaderboard');
+        break;
+    }
+  };
+
+  // Skill assessment handler
+  const handleSkillAssessment = () => {
+    navigate('/dashboard/user/skills/assessment');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
@@ -27,12 +211,11 @@ const UserDashboard = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={handleViewRoadmap}
                 className="mt-4 bg-white text-indigo-700 px-5 py-2 rounded-full font-medium inline-flex items-center"
               >
                 View Your Roadmap
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
+                <ArrowRight className="h-4 w-4 ml-1" />
               </motion.button>
             </div>
             <div className="hidden md:block">
@@ -96,6 +279,7 @@ const UserDashboard = () => {
             ].map((card, index) => (
               <motion.div
                 key={index}
+                onClick={() => handleCardClick(card.title as DashboardCardProps['title'])}
                 whileHover={{ 
                   y: -8, 
                   boxShadow: `0 15px 30px -5px ${card.shadowColor}`,
@@ -162,12 +346,11 @@ const UserDashboard = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  onClick={handleViewAnalytics}
                   className="text-indigo-600 font-medium text-sm flex items-center"
                 >
                   View detailed analytics
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <ArrowRight className="h-4 w-4 ml-1" />
                 </motion.button>
               </div>
             </motion.div>
@@ -183,31 +366,10 @@ const UserDashboard = () => {
               </h2>
               
               <div className="space-y-4">
-                {[
-                  {
-                    icon: <Calendar className="w-6 h-6 text-indigo-600" />,
-                    title: "Team Meeting",
-                    time: "Today at 3:00 PM",
-                    status: "urgent",
-                    bgColor: "indigo"
-                  },
-                  {
-                    icon: <Users className="w-6 h-6 text-purple-600" />,
-                    title: "Mentor Session",
-                    time: "Tomorrow at 2:00 PM",
-                    status: "upcoming",
-                    bgColor: "purple"
-                  },
-                  {
-                    icon: <Code2 className="w-6 h-6 text-pink-600" />,
-                    title: "Code Review",
-                    time: "Friday at 11:00 AM",
-                    status: "scheduled",
-                    bgColor: "pink"
-                  }
-                ].map((event, index) => (
+                {userEvents.map((event, index) => (
                   <motion.div 
                     key={index}
+                    onClick={() => handleEventClick(event)}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 + index * 0.1 }}
@@ -237,11 +399,10 @@ const UserDashboard = () => {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
+                onClick={handleAddEvent}
                 className="mt-6 w-full py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg font-medium flex items-center justify-center"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
+                <Plus className="h-4 w-4 mr-2" />
                 Add New Event
               </motion.button>
             </motion.div>
@@ -287,6 +448,7 @@ const UserDashboard = () => {
               ].map((activity, index) => (
                 <motion.div 
                   key={index}
+                  onClick={() => handleActivityClick(activity)}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 + index * 0.1 }}
@@ -317,6 +479,7 @@ const UserDashboard = () => {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
+                onClick={handleViewAllActivity}
                 className="text-indigo-600 font-medium text-sm"
               >
                 View all activity
@@ -344,6 +507,7 @@ const UserDashboard = () => {
                 ].map((action, index) => (
                   <motion.div
                     key={index}
+                    onClick={() => handleQuickAction(action.label as QuickActionType)}
                     whileHover={{ y: -5, backgroundColor: "#f5f3ff" }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-gray-50 rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer"
@@ -391,6 +555,7 @@ const UserDashboard = () => {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
+                onClick={handleSkillAssessment}
                 className="mt-6 w-full py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg font-medium"
               >
                 Take Skill Assessment
@@ -399,6 +564,117 @@ const UserDashboard = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Add Event Modal */}
+      {showAddEventModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden"
+          >
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-medium text-white">Add New Event</h3>
+                <button 
+                  onClick={() => setShowAddEventModal(false)}
+                  className="text-white hover:text-gray-200"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6">
+              <form onSubmit={(e) => { e.preventDefault(); submitNewEvent(); }}>
+                <div className="mb-4">
+                  <label htmlFor="event-title" className="block text-sm font-medium text-gray-700 mb-1">
+                    Event Title
+                  </label>
+                  <input
+                    id="event-title"
+                    type="text"
+                    value={newEventData.title}
+                    onChange={(e) => setNewEventData({...newEventData, title: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="e.g., Team Standup"
+                    required
+                  />
+                </div>
+                
+                <div className="mb-4">
+                  <label htmlFor="event-type" className="block text-sm font-medium text-gray-700 mb-1">
+                    Event Type
+                  </label>
+                  <select
+                    id="event-type"
+                    value={newEventData.type}
+                    onChange={(e) => setNewEventData({...newEventData, type: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    required
+                  >
+                    <option value="meeting">Team Meeting</option>
+                    <option value="mentor">Mentor Session</option>
+                    <option value="review">Code Review</option>
+                  </select>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="mb-4">
+                    <label htmlFor="event-date" className="block text-sm font-medium text-gray-700 mb-1">
+                      Date
+                    </label>
+                    <input
+                      id="event-date"
+                      type="date"
+                      value={newEventData.date}
+                      onChange={(e) => setNewEventData({...newEventData, date: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label htmlFor="event-time" className="block text-sm font-medium text-gray-700 mb-1">
+                      Time
+                    </label>
+                    <input
+                      id="event-time"
+                      type="time"
+                      value={newEventData.time}
+                      onChange={(e) => setNewEventData({...newEventData, time: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="mt-6 flex justify-end space-x-3">
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setShowAddEventModal(false)}
+                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  >
+                    Cancel
+                  </motion.button>
+                  <motion.button
+                    type="submit"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-md shadow-sm hover:from-indigo-700 hover:to-purple-700"
+                  >
+                    Add Event
+                  </motion.button>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };
