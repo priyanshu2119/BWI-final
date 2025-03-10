@@ -1400,165 +1400,133 @@ const Teams = () => {
           </motion.button>
         </motion.div>
       )}
-      {/* Join Team Application Modal */}
-      <AnimatePresence>
-        {showJoinForm && selectedTeamForJoin && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
-              onClick={() => setShowJoinForm(false)}
+      {/* Join Team Application - Simple Centered Form */}
+{showJoinForm && selectedTeamForJoin && (
+  <div 
+    className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    onClick={() => setShowJoinForm(false)}
+  >
+    <div 
+      className="bg-white rounded-xl shadow-lg w-full max-w-md mx-auto"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Header */}
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-t-xl p-5">
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-bold text-white">Join {selectedTeamForJoin.name}</h2>
+          <button
+            onClick={() => setShowJoinForm(false)}
+            className="p-1 rounded-full bg-white/20 text-white hover:bg-white/30"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+      
+      <div className="p-5">
+        {/* Team info */}
+        <div className="flex items-center mb-4 p-4 bg-gray-50 rounded-lg">
+          <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${selectedTeamForJoin.gradient} flex items-center justify-center text-white overflow-hidden`}>
+            {selectedTeamForJoin.avatar ? (
+              <img src={selectedTeamForJoin.avatar} alt={selectedTeamForJoin.name} className="w-full h-full object-cover" />
+            ) : (
+              <Users className="w-6 h-6" />
+            )}
+          </div>
+          <div className="ml-4">
+            <h3 className="font-medium">{selectedTeamForJoin.name}</h3>
+            <p className="text-sm text-gray-500">{selectedTeamForJoin.hackathon}</p>
+          </div>
+        </div>
+        
+        {/* Open positions */}
+        <div className="mb-4">
+          <h3 className="text-sm font-medium text-gray-700 mb-2">Available positions:</h3>
+          <div className="flex flex-wrap gap-2">
+            {selectedTeamForJoin.openRoles.map((role: string, index: number) => (
+              <span key={index} className="px-3 py-1 bg-indigo-100 text-indigo-700 text-sm rounded-full">
+                {role}
+              </span>
+            ))}
+          </div>
+        </div>
+        
+        <form className="space-y-4" onSubmit={(e) => {
+          e.preventDefault();
+          alert(`Your request to join ${selectedTeamForJoin.name} has been sent!`);
+          setShowJoinForm(false);
+          setJoinFormData({
+            name: '',
+            email: '',
+            eligibility: ''
+          });
+        }}>
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Your Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={joinFormData.name}
+              onChange={(e) => setJoinFormData({...joinFormData, name: e.target.value})}
+              placeholder="Enter your full name"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
             />
-            
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-lg w-[90%] max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-xl z-50"
-              onClick={(e) => e.stopPropagation()}
-              style={{ 
-                minWidth: "280px", 
-                margin: "0 auto" 
-              }}
+          </div>
+          
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Your Email <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={joinFormData.email}
+              onChange={(e) => setJoinFormData({...joinFormData, email: e.target.value})}
+              placeholder="Enter your email address"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="eligibility" className="block text-sm font-medium text-gray-700 mb-1">
+              Why do you want to join this team? <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              id="eligibility"
+              rows={3}
+              value={joinFormData.eligibility}
+              onChange={(e) => setJoinFormData({...joinFormData, eligibility: e.target.value})}
+              placeholder="Describe your skills and why you'd be a good fit for this team..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          
+          <div className="flex justify-end gap-3 pt-3">
+            <button
+              type="button"
+              onClick={() => setShowJoinForm(false)}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
             >
-              <div className="sticky top-0 bg-white border-b border-gray-200 p-6 pb-4 z-10">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-bold text-gray-800">Join Team</h2>
-                  <motion.button
-                    onClick={() => setShowJoinForm(false)}
-                    className="p-1 rounded-full hover:bg-gray-100"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <X className="w-6 h-6 text-gray-500" />
-                  </motion.button>
-                </div>
-              </div>
-              
-              <div className="p-6 pt-3">
-                {/* Team info */}
-                <div className="flex items-center mb-4 p-4 bg-gray-50 rounded-lg">
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${selectedTeamForJoin.gradient} flex items-center justify-center text-white overflow-hidden`}>
-                    {selectedTeamForJoin.avatar ? (
-                      <img src={selectedTeamForJoin.avatar} alt={selectedTeamForJoin.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <Users className="w-6 h-6" />
-                    )}
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="font-medium">{selectedTeamForJoin.name}</h3>
-                    <p className="text-sm text-gray-500">{selectedTeamForJoin.hackathon}</p>
-                  </div>
-                </div>
-                
-                {/* Open positions */}
-                <div className="mb-6">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">Applying for position(s):</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedTeamForJoin.openRoles.map((role: string, index: number) => (
-                      <span key={index} className="px-3 py-1 bg-indigo-100 text-indigo-700 text-sm rounded-full">
-                      {role}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                
-                <form className="space-y-4" onSubmit={(e) => {
-                  e.preventDefault();
-                  // Handle form submission
-                  alert(`Your request to join ${selectedTeamForJoin.name} has been sent!`);
-                  setShowJoinForm(false);
-                  setJoinFormData({
-                    name: '',
-                    email: '',
-                    eligibility: ''
-                  });
-                }}>
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      Your Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      value={joinFormData.name}
-                      onChange={(e) => setJoinFormData({...joinFormData, name: e.target.value})}
-                      placeholder="Enter your full name"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Your Email <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={joinFormData.email}
-                      onChange={(e) => setJoinFormData({...joinFormData, email: e.target.value})}
-                      placeholder="Enter your email address"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="eligibility" className="block text-sm font-medium text-gray-700 mb-2">
-                      Why do you want to join this team? <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      id="eligibility"
-                      rows={4}
-                      value={joinFormData.eligibility}
-                      onChange={(e) => setJoinFormData({...joinFormData, eligibility: e.target.value})}
-                      placeholder="Describe your skills, qualifications, and why you'd be a good fit for this team..."
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="bg-blue-50 p-4 rounded-lg flex items-start">
-                    <div className="mr-3 mt-0.5">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm text-blue-800">
-                        Your request will be sent to the team leader for review. You'll receive an email notification when they respond.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-end gap-3 pt-4">
-                    <motion.button
-                      type="button"
-                      onClick={() => setShowJoinForm(false)}
-                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg"
-                      whileHover={{ backgroundColor: "rgba(0,0,0,0.03)" }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Cancel
-                    </motion.button>
-                    <motion.button
-                      type="submit"
-                      className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Submit Application
-                    </motion.button>
-                  </div>
-                </form>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              disabled={!joinFormData.name || !joinFormData.email || !joinFormData.eligibility}
+            >
+              Submit Application
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };
