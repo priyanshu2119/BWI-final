@@ -15,17 +15,17 @@ import Mentors from './pages/Mentors';
 import Projects from './pages/Projects';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuthStore } from './store/authStore';
-import UserRoadmap from './pages/dashboard/UserRoadmap';
-import UserAchievements from './pages/dashboard/UserAchievements';
-import UserTeams from './pages/dashboard/UserTeams';
-import UserAnalytics from './pages/dashboard/UserAnalytics';
-import UserEventDetails from './pages/dashboard/UserEventDetails';
-import UserActivity from './pages/dashboard/UserActivity';
-import UserProgress from './pages/dashboard/UserProgress';
-import SkillAssessment from './pages/dashboard/SkillAssessment';
-import CreateProject from './pages/CreateProject';
-import CreateTeam from './pages/CreateTeam';
-import SubmitProject from './pages/SubmitProject';
+import UserRoadmap from './User_Dashboard/UserRoadmap';
+import UserAchievements from './User_Dashboard/UserAchievements';
+import UserTeams from './User_Dashboard/UserTeams';
+import UserAnalytics from './User_Dashboard/UserAnalytics';
+import UserEventDetails from './User_Dashboard/UserEventDetails';
+import UserActivity from './User_Dashboard/UserActivity';
+import UserProgress from './User_Dashboard/UserProgress';
+import SkillAssessment from './User_Dashboard/SkillAssessment';
+import CreateProject from './User_Dashboard/CreateProject';
+import CreateTeam from './User_Dashboard/CreateTeam';
+import SubmitProject from './User_Dashboard/SubmitProject';
 
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);

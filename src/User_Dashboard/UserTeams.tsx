@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Users, Plus, Settings, ChevronRight, ExternalLink, Calendar, Clock, MoreHorizontal, Shield } from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore } from '../store/authStore';
 
 const UserTeams = () => {
   const user = useAuthStore((state) => state.user);

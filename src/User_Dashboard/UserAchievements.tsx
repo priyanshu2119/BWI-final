@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Award, Medal, Trophy, Star, Badge, Gift, Clock } from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore } from '../store/authStore';
 
 const UserAchievements = () => {
   const user = useAuthStore((state) => state.user);

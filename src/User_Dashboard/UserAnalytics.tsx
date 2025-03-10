@@ -5,7 +5,7 @@ import {
   ArrowLeft, BarChart2, TrendingUp, Calendar, Award, Users, Code, 
   Activity, Clock, Zap, Download, RefreshCcw, Filter
 } from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore } from '../store/authStore';
 
 const UserAnalytics = () => {
   const user = useAuthStore((state) => state.user);
