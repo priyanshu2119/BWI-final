@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Moon, Sun, Search, LogOut } from 'lucide-react';
+import { Menu, X, Search, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showAuthMenu, setShowAuthMenu] = useState(false);
@@ -120,15 +119,6 @@ const Navbar = () => {
                 Projects
               </motion.span>
             </Link>
-            
-            <motion.button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className="p-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full transition-colors border border-white/30"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              {isDarkMode ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-indigo-600" />}
-            </motion.button>
             
             {isAuthenticated ? (
               <div className="relative">
