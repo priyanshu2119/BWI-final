@@ -72,14 +72,14 @@ const UserLogin = () => {
         className="max-w-md w-full space-y-6 relative z-10"
       >
         <div className="text-center">
-          <motion.div 
+            <motion.div 
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.3, type: "spring" }}
-            className="mx-auto h-20 w-20 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 flex items-center justify-center shadow-lg"
-          >
+            className="mx-auto mt-16 h-20 w-20 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 flex items-center justify-center shadow-lg"
+            >
             <UserIcon className="h-10 w-10 text-white" />
-          </motion.div>
+            </motion.div>
           
           <motion.h2 
             initial={{ opacity: 0 }}

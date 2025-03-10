@@ -26,6 +26,8 @@ import SkillAssessment from './User_Dashboard/SkillAssessment';
 import CreateProject from './User_Dashboard/CreateProject';
 import CreateTeam from './User_Dashboard/CreateTeam';
 import SubmitProject from './User_Dashboard/SubmitProject';
+import Support from './pages/Support';
+import SignUp from './pages/auth/SignUp';
 
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -36,6 +38,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/user/login" element={<UserLogin />} />
           <Route path="/organizer/login" element={<OrganizerLogin />} />
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -44,6 +47,7 @@ function App() {
           <Route path="/teams" element={<Teams />} />
           <Route path="/mentors" element={<Mentors />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/support" element={<Support />} />
           
           <Route
             path="/dashboard/user"

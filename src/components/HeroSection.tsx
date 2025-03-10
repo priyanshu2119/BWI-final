@@ -2,7 +2,12 @@ import React from 'react';
 import { Code2, Users, Trophy, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  onExploreClick?: () => void;
+  onRegisterClick?: () => void;
+}
+
+const HeroSection = ({ onExploreClick, onRegisterClick }: HeroSectionProps) => {
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -54,6 +59,7 @@ const HeroSection = () => {
               className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full font-semibold flex items-center gap-2 hover:shadow-lg transform hover:-translate-y-1 transition-all"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={onRegisterClick}
             >
               Register Now
               <ArrowRight className="w-5 h-5" />
@@ -63,6 +69,7 @@ const HeroSection = () => {
               className="px-8 py-4 bg-white text-indigo-600 rounded-full font-semibold border-2 border-indigo-600 flex items-center gap-2 hover:shadow-lg transform hover:-translate-y-1 transition-all"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={onExploreClick}
             >
               Explore Hackathons
             </motion.button>

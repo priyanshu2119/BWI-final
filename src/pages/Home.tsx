@@ -6,8 +6,10 @@ import CountUp from 'react-countup';
 import { TypeAnimation } from 'react-type-animation';
 import { MessageSquare } from 'react-feather';
 import ParticlesBg from 'particles-bg';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
   // For parallax scroll effect
   const { scrollY } = useScroll();
   // Note: For smooth scrolling, consider using CSS scroll-behavior or another approach
@@ -68,6 +70,39 @@ const Home = () => {
   ];
 
   const [showToast, setShowToast] = useState(false);
+  const [email, setEmail] = useState('');
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<null | 'success' | 'error'>(null);
+  // Add state for the chat modal
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !email.includes('@')) return;
+    
+    setIsSubscribing(true);
+    
+    try {
+      // Simulating API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSubscriptionStatus('success');
+      setEmail('');
+      
+      // Reset success message after 3 seconds
+      setTimeout(() => {
+        setSubscriptionStatus(null);
+      }, 3000);
+    } catch (error) {
+      setSubscriptionStatus('error');
+      
+      // Reset error message after 3 seconds
+      setTimeout(() => {
+        setSubscriptionStatus(null);
+      }, 3000);
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
 
   return (
     <div className="relative overflow-hidden">
@@ -129,8 +164,10 @@ const Home = () => {
         }} 
         className="relative z-10"
       >
-        <HeroSection />
-       
+        <HeroSection 
+          onRegisterClick={() => navigate('/signup')}
+          onExploreClick={() => navigate('/hackathons')}
+        />
       </motion.div>
       
       {/* TypeAnimation Section - Integrated with white background */}
@@ -192,8 +229,12 @@ const Home = () => {
                 className="px-6 py-3 bg-white text-indigo-900 rounded-full font-medium text-lg mt-4 self-start"
                 whileHover={{ scale: 1.03, boxShadow: "0 10px 25px -5px rgba(255, 255, 255, 0.3)" }}
                 whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  console.log("Navigating to signup page");
+                  navigate('/signup');
+                }}
               >
-                Apply Now
+                Register Now
               </motion.button>
             </div>
             <div className="relative h-64 md:h-auto">
@@ -250,6 +291,7 @@ const Home = () => {
               boxShadow: "0 8px 20px -5px rgba(79, 70, 229, 0.2)"
             }}
             whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/hackathons')}
           >
             Join Upcoming Hackathons
           </motion.button>
@@ -265,11 +307,11 @@ const Home = () => {
           
           {/* Timeline steps */}
           {[
-            { icon: "👋", title: "Register", description: "Create an account and set up your developer profile" },
-            { icon: "🔍", title: "Find Hackathons", description: "Browse upcoming events that match your skills and interests" },
-            { icon: "👥", title: "Form Teams", description: "Join existing teams or create your own with our team matching" },
-            { icon: "💻", title: "Build Projects", description: "Collaborate and code during the hackathon period" },
-            { icon: "🏆", title: "Win Prizes", description: "Submit your project and win recognition and rewards" }
+            { icon: "👋", title: "Register", description: "Create an account and set up your developer profile", link: "/user/login" },
+            { icon: "🔍", title: "Find Hackathons", description: "Browse upcoming events that match your skills and interests", link: "/hackathons" },
+            { icon: "👥", title: "Form Teams", description: "Join existing teams or create your own with our team matching", link: "/teams" },
+            { icon: "💻", title: "Build Projects", description: "Collaborate and code during the hackathon period", link: "/projects/new" },
+            { icon: "🏆", title: "Win Prizes", description: "Submit your project and win recognition and rewards", link: "/projects/submit" }
           ].map((step, i) => (
             <motion.div 
               key={i} 
@@ -284,10 +326,19 @@ const Home = () => {
                 <span className="text-xl">{step.icon}</span>
               </div>
               <div className="w-1/2 p-4">
-                <div className="bg-white p-6 rounded-lg shadow-lg">
+                <motion.div 
+                  className="bg-white p-6 rounded-lg shadow-lg cursor-pointer"
+                  whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(99, 102, 241, 0.3)" }}
+                  onClick={() => navigate(step.link)}
+                >
                   <h3 className="text-xl font-bold mb-2 text-indigo-900">{step.title}</h3>
                   <p className="text-gray-600">{step.description}</p>
-                </div>
+                  <div className="mt-3 flex justify-end">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </motion.div>
               </div>
             </motion.div>
           ))}
@@ -357,15 +408,28 @@ const Home = () => {
         <h2 className="text-2xl font-semibold text-center mb-2">Trusted By</h2>
         <p className="text-gray-500 text-center mb-12">Our platform is backed by industry leaders</p>
         
+        {/* Update the company logos */}
         <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
-          {["Google", "Microsoft", "Amazon", "Meta", "IBM", "Intel"].map((company) => (
-            <motion.div 
-              key={company}
+          {[
+            {name: "Google", url: "https://cloud.google.com/developers", logo: "/logos/google.png"},
+            {name: "Microsoft", url: "https://developer.microsoft.com", logo: "/logos/microsoft.png"},
+            {name: "Amazon", url: "https://aws.amazon.com/developers", logo: "/logos/amazon.png"},
+            {name: "Meta", url: "https://developers.facebook.com", logo: "/logos/meta.png"},
+            {name: "IBM", url: "https://developer.ibm.com", logo: "/logos/ibm.png"},
+            {name: "Intel", url: "https://www.intel.com/content/www/us/en/developer/overview.html", logo: "/logos/intel.png"}
+          ].map((company) => (
+            <motion.a 
+              key={company.name}
+              href={company.url}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center justify-center grayscale hover:grayscale-0 transition-all"
               whileHover={{ scale: 1.05 }}
             >
-              <div className="h-12 flex items-center justify-center font-bold text-xl text-gray-400">{company}</div>
-            </motion.div>
+              <div className="h-12 flex items-center justify-center font-bold text-xl text-gray-400">
+                {company.name}
+              </div>
+            </motion.a>
           ))}
         </div>
       </div>
@@ -391,20 +455,44 @@ const Home = () => {
             <h2 className="text-2xl md:text-3xl font-bold mb-4">Stay Updated</h2>
             <p className="text-indigo-200 mb-6">Get notified about new hackathons and opportunities</p>
             
-            <div className="flex flex-col sm:flex-row gap-2">
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2">
               <input 
                 type="email" 
                 placeholder="Enter your email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
                 className="px-4 py-3 rounded-lg flex-grow bg-indigo-800 border border-indigo-600 text-white placeholder-indigo-300 focus:outline-none"
               />
               <motion.button 
-                className="px-6 py-3 bg-white text-indigo-900 rounded-lg font-medium"
+                type="submit"
+                className={`px-6 py-3 bg-white text-indigo-900 rounded-lg font-medium flex items-center justify-center ${isSubscribing ? 'opacity-70' : ''}`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                disabled={isSubscribing}
               >
-                Subscribe
+                {isSubscribing ? (
+                  <svg className="animate-spin h-5 w-5 text-indigo-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : 'Subscribe'}
               </motion.button>
-            </div>
+            </form>
+
+            {/* Subscription status message */}
+            {subscriptionStatus && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className={`mt-3 text-center ${subscriptionStatus === 'success' ? 'text-green-300' : 'text-red-300'}`}
+              >
+                {subscriptionStatus === 'success' 
+                  ? 'Thanks for subscribing! Check your email.' 
+                  : 'Oops! Something went wrong. Please try again.'}
+              </motion.div>
+            )}
           </div>
         </div>
       </div>
@@ -420,6 +508,7 @@ const Home = () => {
         </motion.div>
       )}
 
+      {/* Update the message button to open chat modal */}
       <motion.button
         className="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-lg z-50"
         whileHover={{ scale: 1.1 }}
@@ -431,9 +520,50 @@ const Home = () => {
           boxShadow: ["0px 0px 0px rgba(79, 70, 229, 0.4)", "0px 0px 20px rgba(79, 70, 229, 0.7)", "0px 0px 0px rgba(79, 70, 229, 0.4)"] 
         }}
         transition={{ duration: 2 }}
+        onClick={() => navigate('/support')}
       >
         <MessageSquare className="w-6 h-6" />
       </motion.button>
+
+      {/* Chat Modal */}
+      {isChatOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.9 }}
+          className="fixed bottom-24 right-8 w-80 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200"
+        >
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 text-white flex justify-between items-center">
+            <h3 className="font-semibold">Chat Support</h3>
+            <button onClick={() => setIsChatOpen(false)}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div className="h-64 overflow-y-auto p-4 bg-gray-50">
+            <div className="flex flex-col gap-3">
+              <div className="bg-indigo-100 rounded-lg p-3 mr-12">
+                <p className="text-sm text-gray-700">
+                  👋 Hello! How can we help you today with hackathons or finding a team?
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="p-3 border-t border-gray-200 flex items-center">
+            <input
+              type="text"
+              placeholder="Type your message..."
+              className="flex-grow px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+            />
+            <button className="ml-2 p-2 bg-indigo-600 text-white rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+            </button>
+          </div>
+        </motion.div>
+      )}
 
       <motion.div 
         className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 origin-left z-50"
