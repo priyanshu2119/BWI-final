@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../../store/authStore';
 import { Users, Calendar, Trophy, BarChart2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const OrganizerDashboard = () => {
   const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
+  
   // Add state for section collapse
   const [sectionsState, setSectionsState] = useState({
     hackathons: true,
@@ -25,6 +28,15 @@ const OrganizerDashboard = () => {
     }));
   };
 
+  // Navigation handlers
+  const navigateToCreateHackathon = () => navigate('/organizer/create-hackathon');
+  const navigateToManageSubmissions = (hackathonId?: string) => navigate(`/organizer/manage-submissions/${hackathonId || ''}`);
+  const navigateToAnalytics = (hackathonId?: string) => navigate(`/organizer/analytics/${hackathonId || ''}`);
+  const navigateToSettings = (hackathonId?: string) => navigate(`/organizer/settings/${hackathonId || ''}`);
+  const navigateToTeamManagement = () => navigate('/organizer/team-management');
+  const navigateToParticipants = (hackathonId?: string) => navigate(`/organizer/participants/${hackathonId || ''}`);
+  const navigateToJudges = (hackathonId?: string) => navigate(`/organizer/judges/${hackathonId || ''}`);
+  
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -66,6 +78,7 @@ const OrganizerDashboard = () => {
                 whileHover={{ scale: 1.02, backgroundColor: '#4f46e5' }}
                 whileTap={{ scale: 0.98 }}
                 className="px-4 py-2 bg-indigo-600 text-white rounded-lg flex items-center shadow-md"
+                onClick={navigateToCreateHackathon}
               >
                 <span className="mr-2">Create Event</span>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -325,6 +338,7 @@ const OrganizerDashboard = () => {
                     whileHover={{ scale: 1.01, backgroundColor: '#4338ca' }}
                     whileTap={{ scale: 0.99 }}
                     className="w-full px-4 py-3 bg-indigo-600 text-white rounded-lg flex items-center justify-between shadow-sm"
+                    onClick={navigateToCreateHackathon}
                   >
                     <span className="font-medium">Create New Hackathon</span>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -336,6 +350,7 @@ const OrganizerDashboard = () => {
                     whileHover={{ scale: 1.01, backgroundColor: '#1e40af' }}
                     whileTap={{ scale: 0.99 }}
                     className="w-full px-4 py-3 bg-blue-700 text-white rounded-lg flex items-center justify-between shadow-sm"
+                    onClick={() => navigateToManageSubmissions()}
                   >
                     <span className="font-medium">Review Submissions</span>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -386,6 +401,7 @@ const OrganizerDashboard = () => {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                     className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-sm font-medium flex items-center justify-center gap-2"
+                    onClick={navigateToTeamManagement}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -456,6 +472,7 @@ const OrganizerDashboard = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="p-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex flex-col items-center justify-center"
+                  onClick={navigateToCreateHackathon}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -467,6 +484,7 @@ const OrganizerDashboard = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="p-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex flex-col items-center justify-center"
+                  onClick={() => navigateToManageSubmissions()}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -478,6 +496,7 @@ const OrganizerDashboard = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="p-4 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors flex flex-col items-center justify-center"
+                  onClick={() => navigateToAnalytics()}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -489,6 +508,7 @@ const OrganizerDashboard = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="p-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex flex-col items-center justify-center"
+                  onClick={() => navigateToSettings()}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -655,6 +675,7 @@ const OrganizerDashboard = () => {
                           whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
                           whileTap={{ scale: 0.98 }}
                           className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
+                          onClick={() => navigateToParticipants()}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -665,6 +686,7 @@ const OrganizerDashboard = () => {
                           whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
                           whileTap={{ scale: 0.98 }}
                           className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
+                          onClick={() => navigateToManageSubmissions()}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -675,6 +697,7 @@ const OrganizerDashboard = () => {
                           whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
                           whileTap={{ scale: 0.98 }}
                           className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
+                          onClick={() => navigateToJudges()}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
@@ -685,6 +708,7 @@ const OrganizerDashboard = () => {
                           whileHover={{ scale: 1.02, backgroundColor: "#f9fafb" }}
                           whileTap={{ scale: 0.98 }}
                           className="text-sm border border-gray-200 rounded-lg py-2 px-1 flex items-center justify-center gap-1"
+                          onClick={() => navigateToSettings()}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
