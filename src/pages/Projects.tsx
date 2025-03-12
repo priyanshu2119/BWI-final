@@ -18,7 +18,8 @@ import {
   Folder,
   FolderPlus,
   Plus,
-  CheckCircle
+  CheckCircle,
+  X
 } from 'lucide-react';
 
 const projects = [
@@ -971,151 +972,141 @@ const Projects = () => {
         </div>
       </div>
 
-      {/* Project Preview Modal */}
+      {/* Project Preview Modal - Simplified Version */}
       {previewProject && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-4xl mx-4">
-            <div className="relative">
-              <div className="h-64 overflow-hidden relative">
-                <div className={`absolute inset-0 bg-gradient-to-br ${previewProject.gradient} opacity-80`}></div>
-                <img 
-                  src={previewProject.image} 
-                  alt={previewProject.title} 
-                  className="w-full h-full object-cover mix-blend-overlay"
-                />
-                {previewProject.winner && (
-                  <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
-                    <Award className="w-4 h-4 mr-1" />
-                    Winner
-                  </div>
-                )}
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <motion.button
-                    onClick={(e) => handleLikeProject(e, previewProject.id)}
-                    className={`p-2 rounded-full backdrop-blur-sm ${
-                      likedProjects.includes(previewProject.id) 
-                        ? 'bg-white/30 text-red-500' 
-                        : 'bg-white/20 text-white hover:bg-white/30'
-                    }`}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Heart className={`w-5 h-5 ${likedProjects.includes(previewProject.id) ? 'fill-red-500' : ''}`} />
-                  </motion.button>
-                  
-                  <motion.button
-                    onClick={(e) => handleSaveProject(e, previewProject.id)}
-                    className={`p-2 rounded-full backdrop-blur-sm ${
-                      savedProjects.includes(previewProject.id) 
-                        ? 'bg-white/30 text-indigo-500' 
-                        : 'bg-white/20 text-white hover:bg-white/30'
-                    }`}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Bookmark className={`w-5 h-5 ${savedProjects.includes(previewProject.id) ? 'fill-indigo-500' : ''}`} />
-                  </motion.button>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">{previewProject.title}</h3>
-                <p className="text-gray-600 mb-4">{previewProject.description}</p>
-                
-                <div className="mb-4">
-                  <div className="flex flex-wrap gap-2">
-                    {previewProject.technologies.map((tech, index) => (
-                      <motion.span
-                        key={index}
-                        className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full flex items-center"
-                        whileHover={{ scale: 1.05 }}
-                      >
-                        <Hash className="w-3 h-3 mr-1" />
-                        {tech}
-                      </motion.span>
-                    ))}
-                  </div>
-                </div>
-                
-                <div className="flex flex-wrap justify-between items-center mb-4">
-                  <div className="text-sm text-gray-500">
-                    <span className="mr-4">Team: {previewProject.teamName} ({previewProject.teamSize} members)</span>
-                    <span>{previewProject.hackathon}</span>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <div className="flex items-center text-gray-500 text-sm mr-3">
-                      <Eye className="w-4 h-4 mr-1" />
-                      {previewProject.views}
-                    </div>
-                    <div className="flex items-center text-gray-500 text-sm">
-                      <ThumbsUp className="w-4 h-4 mr-1" />
-                      {previewProject.likes + (likedProjects.includes(previewProject.id) ? 1 : 0)}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex gap-2 mb-4">
-                  <a 
-                    href={previewProject.demoUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-lg flex items-center gap-2"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Live Demo
-                  </a>
-                  <a 
-                    href={previewProject.repoUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 border border-gray-300 rounded-lg flex items-center gap-2"
-                  >
-                    <Github className="w-4 h-4" />
-                    Code
-                  </a>
-                </div>
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto"
+          onClick={() => setPreviewProject(null)}
+        >
+          <div 
+            className="bg-white rounded-lg shadow-lg max-w-3xl w-full relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button 
+              className="absolute right-4 top-4 text-white bg-gray-800 bg-opacity-50 p-1 rounded-full z-10 hover:bg-opacity-70"
+              onClick={() => setPreviewProject(null)}
+            >
+              <X className="w-5 h-5" />
+            </button>
 
-                {/* Add this at the bottom of the project preview modal */}
-                <div className="mt-8 pt-8 border-t border-gray-200">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                    Related Projects
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {getRelatedProjects(previewProject.id).map((project) => (
-                      <motion.div
-                        key={project.id}
-                        className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md cursor-pointer"
-                        whileHover={{ y: -4 }}
-                        onClick={() => {
-                          setPreviewProject(project);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                      >
-                        <div className="h-32 relative overflow-hidden">
-                          <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-80`}></div>
-                          <img 
-                            src={project.image} 
-                            alt={project.title} 
-                            className="w-full h-full object-cover mix-blend-overlay"
-                          />
-                        </div>
-                        <div className="p-4">
-                          <h4 className="font-medium text-gray-900 line-clamp-1">{project.title}</h4>
-                          <p className="text-sm text-gray-500 mt-1 line-clamp-2">{project.description}</p>
-                        </div>
-                      </motion.div>
-                    ))}
+            {/* Header image */}
+            <div className="h-56 relative">
+              <div className={`absolute inset-0 bg-gradient-to-br ${previewProject.gradient}`}></div>
+              <img 
+                src={previewProject.image} 
+                alt={previewProject.title} 
+                className="w-full h-full object-cover opacity-80"
+              />
+              {previewProject.winner && (
+                <div className="absolute bottom-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                  <Award className="w-4 h-4 mr-1" />
+                  Winner
+                </div>
+              )}
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              <h3 className="text-2xl font-bold text-gray-800 mb-3">{previewProject.title}</h3>
+              <p className="text-gray-600 mb-4">{previewProject.description}</p>
+              
+              <div className="mb-4 flex flex-wrap gap-2">
+                {previewProject.technologies.map((tech, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full flex items-center"
+                  >
+                    <Hash className="w-3 h-3 mr-1" />
+                    {tech}
+                  </span>
+                ))}
+              </div>
+              
+              <div className="flex flex-wrap justify-between items-center mb-4">
+                <div className="text-sm text-gray-500">
+                  <span className="mr-4">Team: {previewProject.teamName} ({previewProject.teamSize} members)</span>
+                  <span>{previewProject.hackathon}</span>
+                </div>
+                
+                <div className="flex gap-2">
+                  <div className="flex items-center text-gray-500 text-sm mr-3">
+                    <Eye className="w-4 h-4 mr-1" />
+                    {previewProject.views}
+                  </div>
+                  <div className="flex items-center text-gray-500 text-sm">
+                    <ThumbsUp className="w-4 h-4 mr-1" />
+                    {previewProject.likes + (likedProjects.includes(previewProject.id) ? 1 : 0)}
                   </div>
                 </div>
               </div>
-              <button 
-                onClick={() => setPreviewProject(null)} 
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              
+              <div className="flex flex-wrap gap-2 mb-6">
+                <a 
+                  href={previewProject.demoUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg flex items-center gap-2 hover:bg-indigo-700"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Live Demo
+                </a>
+                <a 
+                  href={previewProject.repoUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 border border-gray-300 rounded-lg flex items-center gap-2 hover:bg-gray-50"
+                >
+                  <Github className="w-4 h-4" />
+                  Code
+                </a>
+                <button
+                  onClick={(e) => handleLikeProject(e, previewProject.id)}
+                  className={`p-2 rounded-lg flex items-center ${
+                    likedProjects.includes(previewProject.id) 
+                      ? 'text-red-500' 
+                      : 'text-gray-500 hover:bg-gray-100'
+                  }`}
+                >
+                  <Heart className={`w-5 h-5 ${likedProjects.includes(previewProject.id) ? 'fill-red-500' : ''}`} />
+                </button>
+                <button
+                  onClick={(e) => handleSaveProject(e, previewProject.id)}
+                  className={`p-2 rounded-lg flex items-center ${
+                    savedProjects.includes(previewProject.id) 
+                      ? 'text-indigo-500' 
+                      : 'text-gray-500 hover:bg-gray-100'
+                  }`}
+                >
+                  <Bookmark className={`w-5 h-5 ${savedProjects.includes(previewProject.id) ? 'fill-indigo-500' : ''}`} />
+                </button>
+              </div>
+
+              {/* Simple related projects section */}
+              <div className="pt-4 border-t border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                  Related Projects
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {getRelatedProjects(previewProject.id).slice(0, 2).map((project) => (
+                    <div
+                      key={project.id}
+                      className="flex gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50 cursor-pointer"
+                      onClick={() => {
+                        setPreviewProject(project);
+                      }}
+                    >
+                      <div className="w-12 h-12 rounded overflow-hidden flex-shrink-0">
+                        <div className={`h-full w-full bg-gradient-to-br ${project.gradient}`}></div>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900 text-sm">{project.title}</h4>
+                        <p className="text-xs text-gray-500 line-clamp-1">{project.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
