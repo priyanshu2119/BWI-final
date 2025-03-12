@@ -19,7 +19,8 @@ import {
   FolderPlus,
   Plus,
   CheckCircle,
-  X
+  X,
+  Check
 } from 'lucide-react';
 
 const projects = [
@@ -180,6 +181,19 @@ const Projects = () => {
   const [collectionToEdit, setCollectionToEdit] = useState<number | null>(null);
   const [newCollection, setNewCollection] = useState({ name: '', description: '' });
   const [showAddToCollectionDropdown, setShowAddToCollectionDropdown] = useState<number | null>(null);
+
+  // First, add this state variable at the top of the Projects component
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const [submitFormData, setSubmitFormData] = useState({
+    projectName: '',
+    teamName: '',
+    description: '',
+    techStack: '',
+    demoUrl: '',
+    repoUrl: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   // Add this effect to save collections to localStorage when they change
   React.useEffect(() => {
@@ -964,6 +978,7 @@ const Projects = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
+              onClick={() => setShowSubmitModal(true)}
             >
               Submit Your Project
               <ChevronRight className="w-5 h-5" />
@@ -1218,6 +1233,197 @@ const Projects = () => {
                   </div>
                 </div>
               </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Project Submission Modal */}
+      <AnimatePresence>
+        {showSubmitModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            onClick={() => !isSubmitting && setShowSubmitModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {submitSuccess ? (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-green-100 rounded-full mx-auto flex items-center justify-center mb-4">
+                    <Check className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">Project Submitted!</h3>
+                  <p className="text-gray-600 mb-6">Your project has been submitted successfully. Our team will review it shortly.</p>
+                  <button
+                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg"
+                    onClick={() => {
+                      setShowSubmitModal(false);
+                      setSubmitSuccess(false);
+                      setSubmitFormData({
+                        projectName: '',
+                        teamName: '',
+                        description: '',
+                        techStack: '',
+                        demoUrl: '',
+                        repoUrl: ''
+                      });
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold text-gray-800">Submit Your Project</h2>
+                    <button
+                      onClick={() => !isSubmitting && setShowSubmitModal(false)}
+                      className="p-1 rounded-full hover:bg-gray-100"
+                      disabled={isSubmitting}
+                    >
+                      <X className="w-5 h-5 text-gray-500" />
+                    </button>
+                  </div>
+                  
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    setIsSubmitting(true);
+                    
+                    // Simulate API request
+                    setTimeout(() => {
+                      setIsSubmitting(false);
+                      setSubmitSuccess(true);
+                    }, 1500);
+                  }}>
+                    <div className="space-y-4">
+                      <div>
+                        <label htmlFor="projectName" className="block text-sm font-medium text-gray-700 mb-1">
+                          Project Name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="projectName"
+                          value={submitFormData.projectName}
+                          onChange={(e) => setSubmitFormData({...submitFormData, projectName: e.target.value})}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          required
+                          placeholder="Enter your project name"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                      
+                      <div>
+                        <label htmlFor="teamName" className="block text-sm font-medium text-gray-700 mb-1">
+                          Team Name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="teamName"
+                          value={submitFormData.teamName}
+                          onChange={(e) => setSubmitFormData({...submitFormData, teamName: e.target.value})}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          required
+                          placeholder="Enter your team name"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                      
+                      <div>
+                        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                          Project Description <span className="text-red-500">*</span>
+                        </label>
+                        <textarea
+                          id="description"
+                          rows={3}
+                          value={submitFormData.description}
+                          onChange={(e) => setSubmitFormData({...submitFormData, description: e.target.value})}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          required
+                          placeholder="Describe your project in a few sentences"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                      
+                      <div>
+                        <label htmlFor="techStack" className="block text-sm font-medium text-gray-700 mb-1">
+                          Technologies Used <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="techStack"
+                          value={submitFormData.techStack}
+                          onChange={(e) => setSubmitFormData({...submitFormData, techStack: e.target.value})}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          required
+                          placeholder="e.g. React, Node.js, MongoDB (comma separated)"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor="demoUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                            Demo URL
+                          </label>
+                          <input
+                            type="url"
+                            id="demoUrl"
+                            value={submitFormData.demoUrl}
+                            onChange={(e) => setSubmitFormData({...submitFormData, demoUrl: e.target.value})}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="https://yourdemo.com"
+                            disabled={isSubmitting}
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="repoUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                            Repository URL <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="url"
+                            id="repoUrl"
+                            value={submitFormData.repoUrl}
+                            onChange={(e) => setSubmitFormData({...submitFormData, repoUrl: e.target.value})}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            required
+                            placeholder="https://github.com/..."
+                            disabled={isSubmitting}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6">
+                      <button
+                        type="submit"
+                        className="w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center justify-center"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Submitting...
+                          </>
+                        ) : (
+                          'Submit Project'
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </>
+              )}
             </motion.div>
           </motion.div>
         )}
