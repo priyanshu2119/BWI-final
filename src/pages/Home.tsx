@@ -5,8 +5,8 @@ import UpcomingHackathons from '../components/UpcomingHackathons';
 import CountUp from 'react-countup';
 import { TypeAnimation } from 'react-type-animation';
 import { MessageSquare } from 'react-feather';
-import ParticlesBg from 'particles-bg';
 import { useNavigate } from 'react-router-dom';
+import AnimatedBackground from '../components/AnimatedBackground';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -106,18 +106,16 @@ const Home = () => {
 
   return (
     <div className="relative overflow-hidden">
-      {/* ParticlesBg implementation (properly configured for z-index) */}
+      <AnimatedBackground />
+      {/* Rest of your Home component */}
+      {/* Replace ParticlesBg with the new AnimatedBackground component */}
       <div className="fixed inset-0 z-[-20] opacity-60" style={{
         position: "absolute",
         zIndex: -1,
         width: "100%",
         height: "100%"
       }}>
-        <ParticlesBg 
-          type="cobweb"
-          bg={true}
-          color="#4f46e5"
-        />
+        <AnimatedBackground />
       </div>
 
       {/* Animated gradient that follows mouse position */}

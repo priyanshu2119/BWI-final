@@ -6,15 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "clean": "node -e \"if(require('fs').existsSync('node_modules/.vite')) require('fs').rmSync('node_modules/.vite', {recursive:true}); if(require('fs').existsSync('dist')) require('fs').rmSync('dist', {recursive:true});\"",
+    "start": "npm run clean && vite"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "canvas-confetti": "^1.9.3",
     "framer-motion": "^11.0.8",
     "lucide-react": "^0.344.0",
-    "particles-bg": "^2.5.5",
     "react": "^18.3.1",
     "react-confetti": "^6.4.0",
     "react-countup": "^6.5.3",
@@ -28,6 +28,7 @@
   "devDependencies": {
     "@eslint/js": "^9.9.1",
     "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^22.13.10",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
@@ -37,9 +38,10 @@
     "eslint-plugin-react-refresh": "^0.4.11",
     "globals": "^15.9.0",
     "postcss": "^8.4.35",
+    "rimraf": "^6.0.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
-    "vite": "^5.4.2"
+    "vite": "^6.2.1"
   }
 }
